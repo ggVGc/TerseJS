@@ -13,7 +13,7 @@ Currently only runs on linux 64bit. Other platforms should work, if you manage t
 
 === Main features:
 
-* *Indentation sensitivity: Each level of indentation gets transformet into a block between `{` `}`*
+* *Indentation sensitivity: Each level of indentation gets transformed into a block between `{` `}`*
 * *Anonymous functions - Courtesy of https://github.com/natefaubion/lambda-chop[lambda_chop] macros*
 * *Function piping*
 
