@@ -2,4 +2,8 @@
 sweet.js: `npm install -g sweet.js`
 
 === Usage:
-`bin/tersejs -o outfile.js infile.sjs`
+`bin/tersejs infile [outfile]`
+
+
+=== Examples:
+include::example.sjs[]

@@ -18,7 +18,7 @@ transformTree (Node children) = Node (map transformTree children)
 transformTree tree = tree
 
 flattenNodes :: Tree -> Tree
-flattenNodes (Node (Leaf lf:(Node n):rest)) = Node (Leaf "INDENT":Leaf lf:Node n:(map flattenNodes rest)<>[Leaf "DEDENT"])
+flattenNodes (Node (Leaf lf:(Node n):rest)) = flattenNodes $ Node (Leaf "INDENT":Leaf lf:Node n:rest<>[Leaf "DEDENT"])
 flattenNodes (Node children) = Node (map flattenNodes children)
 flattenNodes tree = tree
 
@@ -36,17 +36,9 @@ aLeaf = Leaf <$> (many1 (satisfy (not . isSpace)) <* many (oneOf " \t"))
 makeNode leaves nodes = Node $ leaves <> nodes
 
 example = unlines [
-    "lorem ipsum",
-    "dolor1",
-    "dolor2",
-    "    dolor3",
-    "    sit amet",
-    "    consectetur",
-    "        adipiscing elrt dapibus",
-    "        Ho ho ho ho",
-    "    sodales",
-    "urna",
-    "    facilisis"
+    "AAA",
+    "  BBB",
+    "    CCC"
   ]
 
 parseIndentedTree input = runIndent "" $ runParserT aTree () "" input
@@ -54,14 +46,11 @@ parseIndentedTree input = runIndent "" $ runParserT aTree () "" input
 main = do
     args <- getArgs
     input <- if null args then return example else readFile $ head args
-    {-putStrLn $ serializeIndentedTree $ forceEither $ parseIndentedTree input-}
-    {-putStrLn $ PR.ppShow $ forceEither $ parseIndentedTree input-}
     let parsedTree = transformTree $ forceEither $ parseIndentedTree input
-    {-let trans1 = transformTree transOrig-}
-    {-let trans2 = flattenNodes trans1-}
-    {-putStrLn "\nTransformTree"-}
-    {-putStrLn $ PR.ppShow $ trans1-}
-    {-putStrLn "\nFlatten Nodes"-}
-    {-putStrLn $ PR.ppShow $ trans2-}
-    putStrLn $ showTree $ flattenNodes $ transformTree $ parsedTree
-    {-putStrLn $ PR.ppShow $ tree2-}
+    let flattened = flattenNodes $ transformTree $ parsedTree
+    {-putStrLn "Parsed"-}
+    {-putStrLn $ PR.ppShow parsedTree-}
+    {-putStrLn "\nFlattened"-}
+    {-putStrLn $ PR.ppShow flattened-}
+    {-putStrLn "\nOut"-}
+    putStrLn $ showTree flattened

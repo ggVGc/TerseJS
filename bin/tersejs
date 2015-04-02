@@ -1,5 +1,5 @@
-#!/bin/env sh
+#!/bin/env bash
 
-dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-macroDir=$dir/../macros
-sjs --sourcemap --readable-names -m $macroDir/pipe.sjs -m $macroDir/lambda_chop.sjs $@
+thisDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+macroDir=$thisDir/../macros
+sjs --sourcemap --readable-names -m $macroDir/pipe.sjs -m $macroDir/lambda_chop.sjs <($thisDir/indent_to_braces $1) -o $2
