@@ -3,7 +3,7 @@ sweet.js: `npm install -g sweet.js`
 
 === Usage:
 `bin/tersejs [-o outFile -s <sweet.js options>] infile` +
-If no output file is specified with -o, result is printed to stdout.
+If no output file is specified with `-o`, result is printed to stdout.
 
 
 === Examples:
