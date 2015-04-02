@@ -1,7 +1,8 @@
 TerseJS
 -------
 
-Depends on sweet.js. +
+== Depends on:
+sweet.js +
 Get it with:
   `npm install -g sweet.js`
 
