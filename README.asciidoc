@@ -6,4 +6,4 @@ sweet.js: `npm install -g sweet.js`
 
 
 === Examples:
-include::example.sjs[]
+include::./example.sjs[]
