@@ -9,6 +9,8 @@ This project has a few main goals
 
 To get a first glimpse of output, try running `tersejs examples.tjs` in this repository.
 
+Currently only runs on linux 64bit. Other platforms should work, if you manage to compile `indentation_to_braces.hs` and put it in `bin`.
+
 === Main features:
 
 * Indentation sensitivity: Each level of indentation gets transformet into a block between `{` `}`
