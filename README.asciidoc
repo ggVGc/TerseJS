@@ -1,3 +1,12 @@
+
+TerseJS
+-------
+This project has two main goals:
+
+* Read/Write less code.
+* Generate code that looks hand-written, so it is easy to work on even without the original input.
+
+
 ==== Depends on:
 sweet.js: `npm install -g sweet.js`
 
