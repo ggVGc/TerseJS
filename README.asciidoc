@@ -1,7 +1,5 @@
 ==== Depends on:
-sweet.js +
-Get it with:
-  `npm install -g sweet.js`
+sweet.js: `npm install -g sweet.js`
 
 === Usage:
 `bin/tersejs -o outfile.js infile.sjs`
