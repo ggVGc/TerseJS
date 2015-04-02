@@ -21,7 +21,10 @@ var nonsense = λ(x, y)(s, t) f -> 42
 // Placeholders using square brackets and `#` 
 var str = λ[#.toString()]
 var sub = λ[# - #]
-sub(2, 1) === 1
+sub(2, 1) === 1;
+
+// Pipe tuples to functions
+(a,42, b) |> foo |> bar; // Result: bar(foo(a,42,b));
 
 // Multiply all elements in arr by 2, and print results
 (arr, λ[#*2]) |> map |> console.log;
