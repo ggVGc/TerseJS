@@ -1,0 +1,5 @@
+#!/bin/env sh
+
+dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+macroDir=$dir/../macros
+sjs --sourcemap --readable-names -m $macroDir/pipe.sjs -m $macroDir/lambda_chop.sjs $@
