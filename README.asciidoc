@@ -3,9 +3,9 @@ TerseJS
 -------
 This project has a few main goals
 
-* Read/Write less code.
-* Generate code that looks hand-written, so it is easy to work on even without the original input.
-* Stay a complete superset of standard ES5 JavaScript.
+. Read/Write less code.
+. Generate code that looks hand-written, so it is easy to work on even without the original input.
+. Stay a complete superset of standard ES5 JavaScript.
 
 To get a first glimpse of output, try running `tersejs examples.tjs` in this repository.
 
@@ -13,9 +13,9 @@ Currently only runs on linux 64bit. Other platforms should work, if you manage t
 
 === Main features:
 
-* Indentation sensitivity: Each level of indentation gets transformet into a block between `{` `}`
-* Anonymous functions - Courtesy of https://github.com/natefaubion/lambda-chop[lambda_chop] macros
-* Function piping
+. Indentation sensitivity: Each level of indentation gets transformet into a block between `{` `}`
+. Anonymous functions - Courtesy of https://github.com/natefaubion/lambda-chop[lambda_chop] macros
+. Function piping
 
 === Usage:
 `bin/tersejs [-o outFile -s <sweet.js options>] infile` +
