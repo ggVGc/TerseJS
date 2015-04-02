@@ -36,10 +36,19 @@ aLeaf = Leaf <$> (many1 (satisfy (not . isSpace)) <* many (oneOf " \t"))
 makeNode leaves nodes = Node $ leaves <> nodes
 
 example = unlines [
-    "AAA",
-    "  BBB",
-    "    CCC"
+    "lorem ipsum",
+    "dolor1",
+    "dolor2",
+    "    dolor3",
+    "    sit amet",
+    "    consectetur",
+    "        adipiscing elrt dapibus",
+    "        Ho ho ho ho",
+    "    sodales",
+    "urna",
+    "    facilisis"
   ]
+
 
 parseIndentedTree input = runIndent "" $ runParserT aTree () "" input
 
