@@ -1,7 +1,12 @@
+// Create unbound functions 
 var add = λ(x, y) -> x + y
 add(1, 2) === 3
 
-DB.getResourc('foo', λ(err, resp) =>
+// Chain calls
+10 |> foo |> mulBy(2) |> console.log
+
+// Create bound functions 
+DB.getResource('foo', λ(err, resp) =>
   if (err)
     err |> prettify |> console.log
 )
