@@ -2,7 +2,8 @@
 sweet.js: `npm install -g sweet.js`
 
 === Usage:
-`bin/tersejs infile [outfile]`
+`bin/tersejs [-o outFile -s <sweet.js options>] infile`
+If no output file is specified with -o, result is printed to stdout.
 
 
 === Examples:
@@ -31,6 +32,9 @@ var nonsense = λ(x, y)(s, t) f -> 42
 var str = λ[#.toString()]
 var sub = λ[# - #]
 sub(2, 1) === 1
+
+// Multiply all elements in arr by 2, and print results
+(arr, λ[#*2]) |> map |> console.log;
  
 // Shorthand property lambdas 
 var names = arr.map(λ.name)

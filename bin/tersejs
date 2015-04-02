@@ -1,5 +1,41 @@
 #!/bin/env bash
 
+OPTIND=1         # Reset in case getopts has been used previously in the shell.
+
+outFile=""
+show_help()
+{
+cat << EOF
+help will be here
+EOF
+}
+
+sweetOpts=""
+while getopts "h?so:" opt; do
+    case "$opt" in
+    h|\?)
+        show_help
+        exit 0
+        ;;
+    o)  outFile=$OPTARG
+        ;;
+    s)  sweetOpts=$OPTARG
+        ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+[ "$1" = "--" ] && shift
+
 thisDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 macroDir=$thisDir/../macros
-sjs --sourcemap --readable-names -m $macroDir/pipe.sjs -m $macroDir/lambda_chop.sjs <($thisDir/indent_to_braces $1) -o $2
+
+outOpt=""
+if [ -n "$outFile" ]; then
+   outOpt=" -o $outFile"
+fi
+
+sjs --readable-names -m $macroDir/pipe.sjs -m $macroDir/lambda_chop.sjs <($thisDir/indent_to_braces $1) $sweetOpts $outOpt $1
+
+
