@@ -1,14 +1,19 @@
 
 TerseJS
 -------
-This project has two main goals:
+This project has a few main goals
 
 * Read/Write less code.
 * Generate code that looks hand-written, so it is easy to work on even without the original input.
+* Stay a complete superset of standard ES5 JavaScript.
 
+To get a first glimpse of output, try running `tersejs examples.tjs` in this repository.
 
-==== Depends on:
-sweet.js: `npm install -g sweet.js`
+=== Main features:
+
+* Indentation sensitivity: Each level of indentation gets transformet into a block between `{` `}`
+* Anonymous functions - Courtesy of https://github.com/natefaubion/lambda-chop[lambda_chop] macros
+* Function piping
 
 === Usage:
 `bin/tersejs [-o outFile -s <sweet.js options>] infile` +
@@ -59,3 +64,7 @@ var foo = λ(start)->
 
 
 ```
+
+=== Thanks:
+
+* https://github.com/natefaubion[natefaubion] for writing lambda_chop, which lies at the core of this project. Thanks a lot!
