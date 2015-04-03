@@ -10,7 +10,7 @@ import Data.List.Utils
 import qualified Text.Show.Pretty as PR
 
 indentOutString = "{"
-dedentOutString = "}"
+dedentOutString = "};"
 
 
 data Tree = Node [Tree] | Leaf String
@@ -30,7 +30,7 @@ showIndent indLevel = concat $ replicate indLevel "  "
 
 showTreeRec indLevel (Node (Leaf "__$$INDENT$$__":Leaf lf:children)) = "\n" <> showIndent indLevel <> lf <> indentOutString <>concatMap(showTreeRec (indLevel+1)) children
 showTreeRec indLevel (Node children) = "\n" <> showIndent indLevel <> concatMap (showTreeRec (indLevel+1)) children
-showTreeRec indLevel (Leaf "__$$DEDENT$$__")     = "\n"++ showIndent (indLevel-1)  ++dedentOutString++"\n"
+showTreeRec indLevel (Leaf "__$$DEDENT$$__")     = "\n"++ showIndent (indLevel-1)  ++dedentOutString++""
 showTreeRec _ (Leaf text)     = text <> " "
 
 showTree tree = drop 2 $ showTreeRec (-1) tree
@@ -45,6 +45,7 @@ example = unlines [
     "lorem ipsum",
     "dolor1",
     "dolor2",
+    "    ",
     "    dolor3",
     "    sit amet",
     "    consectetur",
@@ -54,6 +55,8 @@ example = unlines [
     "urna",
     "    facilisis"
   ]
+
+{-insertEmptyLineComments = -}
 
 
 parseIndentedTree input = runIndent "" $ runParserT aTree () "" input
