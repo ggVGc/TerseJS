@@ -6,9 +6,16 @@ let ($) = macro {
 }
 */
 
-macro ($){
-  rule { $args:expr (,) ... } => {
-    ($args (,) ...)
+//macro ($){
+  //rule { $args:expr (,) ... } => {
+    //($args (,) ...)
+  //}
+//}
+
+let ($) = macro {
+  rule infix{ $left:expr | $right:expr ... } => {
+      $left ($right (,) ...)
   }
 }
-//export $
+
+export $
