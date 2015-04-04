@@ -49,7 +49,7 @@ macro $lc__placeholders {
         return ss.map(function(s) {
           if (s.token.type === parser.Token.Punctuator &&
               s.token.value === '#') {
-            var ident = makeIdent(String.fromCharCode(code++), here);
+            var ident = makeIdent('_'+String.fromCharCode(code++), here);
             if (args.length) args.push(makePunc(',', here));
             args.push(ident);
             return ident;

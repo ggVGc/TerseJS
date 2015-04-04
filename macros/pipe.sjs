@@ -22,4 +22,3 @@ macro thread {
 operator (|>) 4 left { $lhs, $rhs } => #{ thread $lhs $rhs }
 
 export (|>)
-export (thread)

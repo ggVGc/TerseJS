@@ -36,6 +36,6 @@ if [ -n "$outFile" ]; then
    outOpt=" -o $outFile"
 fi
 
-sjs --readable-names -m $macroDir/pipe.sjs -m $macroDir/lambda_chop.sjs <($thisDir/indent_to_braces $1) $sweetOpts $outOpt $1
+sjs --readable-names -m $macroDir/self.sjs -m $macroDir/pipe.sjs -m $macroDir/lambda_chop.sjs <($thisDir/indent_to_braces $1) $sweetOpts $outOpt $1
 
 
