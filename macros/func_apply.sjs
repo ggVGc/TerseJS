@@ -13,8 +13,11 @@ let ($) = macro {
 //}
 
 let ($) = macro {
-  rule infix{ $left:expr | $right:expr ... } => {
-      $left ($right (,) ...)
+  case infix{ $left:expr | _ $right:expr $r2:expr} => {
+    throwSyntaxError('Too many arguments', 'Operator $ only accepts one right-hand argument', stx)
+  }
+  rule infix{ $left:expr | $right:expr} => {
+      $left ($right)
   }
 }
 
