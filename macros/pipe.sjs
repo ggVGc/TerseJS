@@ -1,6 +1,9 @@
-macro thread {
+macro pipe {
+  rule { (($val ...)) ($prop:ident . $rest ...) } => {
+     $prop. pipe ($val...) ($rest...)
+  }
   rule { $val ($prop:ident . $rest ...) } => {
-     $prop. thread $val ($rest ...)
+     $prop. pipe $val ($rest ...)
   }
   rule { ($val) ($prop:ident()) } => {
       $prop $val
@@ -18,7 +21,7 @@ macro thread {
       $right($val ...)
   }
   rule { $val ($prop:ident) } => {
-      $prop($val)
+      $prop $val
   }
   rule { $val ($prop:ident($args:expr (,) ...)) } => {
       $prop($args (,) ... , $val) 
@@ -31,6 +34,6 @@ macro thread {
   }
 }
 
-operator (|>) 4 left { $lhs, $rhs } => #{ thread $lhs $rhs }
+operator (|>) 4 left { $lhs, $rhs } => #{ pipe $lhs $rhs }
 
 export (|>)
