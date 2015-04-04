@@ -2,6 +2,9 @@ macro thread {
   rule { $val ($prop:ident . $rest ...) } => {
      $prop. thread $val ($rest ...)
   }
+  rule { (($val ... )) ($right:expr) } => {
+      $right($val ...)
+  }
   rule { $val ($prop:ident()) } => {
       $prop($val)
   }

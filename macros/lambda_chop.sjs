@@ -84,7 +84,7 @@ macro $lc__args {
   rule { ( $prev ... ) -> $body:expr } => {
     $lc__curry ( $prev ... ) ( -> ) ( return $body )
   }
-  rule { $tok } => {
+  rule { _ $tok } => {
     $lc__error $tok
   }
 }
