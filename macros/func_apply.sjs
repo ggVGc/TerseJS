@@ -7,8 +7,8 @@ let ($) = macro {
 */
 
 macro ($){
-  rule { $args:expr (,) ... |>} => {
+  rule { $args:expr (,) ... } => {
     ($args (,) ...)
   }
 }
-export $
+//export $

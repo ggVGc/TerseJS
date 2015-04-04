@@ -1,6 +1,6 @@
 macro @ {
   rule {$val:ident} => {
-     self.ident
+     self.$val
   }
   rule { = $val:expr} => {
      self = $val
