@@ -5,6 +5,9 @@ macro pipe {
   rule { $val ($prop:ident . $rest ...) } => {
      $prop. pipe $val ($rest ...)
   }
+  rule { ([$vals (,) ...]) ($prop:ident()) } => {
+      $prop([$vals (,) ...])
+  }
   rule { ($val) ($prop:ident()) } => {
       $prop $val
   }
