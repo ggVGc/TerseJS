@@ -5,11 +5,11 @@ macro pipe {
   rule { $val ($prop:ident . $rest ...) } => {
      $prop. pipe $val ($rest ...)
   }
-  rule { ([$vals (,) ...]) ($prop:ident()) } => {
-      $prop([$vals (,) ...])
+  rule { ($val:ident) ($prop:ident()) } => {
+      $prop()($val)
   }
   rule { ($val) ($prop:ident()) } => {
-      $prop $val
+      $prop() $val
   }
   rule { $val ($prop:ident()) } => {
       $prop($val)
@@ -32,6 +32,7 @@ macro pipe {
   rule { (($val:expr ... )) ($right:expr) } => {
       $right($val ...)
   }
+  
   rule { $val ($right:expr) } => {
       $right $val
   }
