@@ -40,11 +40,11 @@ if [ -n "$outFile" ]; then
    outOpt=" -o $outFile"
 fi
 
-macroModNames="do fun func_apply conditionals self pipe lambda_chop"
+macroModNames=do,fun,func_apply,conditionals,self,pipe,lambda_chop
 
 thisDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )
 macroDir=$thisDir/../macros
-macroIncludes=$(sed -r 's!(\w+)!-m \'$macroDir'/\1.sjs!g' <<< $macroModNames)
+macroIncludes=$(eval "echo -m\ $macroDir/{"$macroModNames"}.sjs")
 
 sjs --readable-names $macroIncludes <($thisDir/indent_to_braces $inFile) $sweetOpts $outOpt $inFile
 
