@@ -11,13 +11,16 @@ EOF
 }
 
 sweetOpts=""
-while getopts "h?so:" opt; do
+compile=false
+while getopts "h?ocs:" opt; do
     case "$opt" in
     h|\?)
         show_help
         exit 0
         ;;
     o)  outFile=$OPTARG
+        ;;
+    c)  compile=true
         ;;
     s)  sweetOpts=$OPTARG
         ;;
@@ -27,15 +30,22 @@ done
 shift $((OPTIND-1))
 
 [ "$1" = "--" ] && shift
-
-thisDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-macroDir=$thisDir/../macros
+inFile=$1
+if $compile; then
+   outFile=$(basename $inFile | cut -d. -f1).js
+fi
 
 outOpt=""
 if [ -n "$outFile" ]; then
    outOpt=" -o $outFile"
 fi
 
-sjs --readable-names -m $macroDir/do.sjs -m $macroDir/fun.sjs -m $macroDir/func_apply.sjs -m $macroDir/conditionals.sjs -m $macroDir/precedence.sjs -m $macroDir/self.sjs -m $macroDir/pipe.sjs -m $macroDir/lambda_chop.sjs <($thisDir/indent_to_braces $1) $sweetOpts $outOpt $1
+macroModNames="do fun func_apply conditionals self pipe lambda_chop"
+
+thisDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )
+macroDir=$thisDir/../macros
+macroIncludes=$(sed -r 's!(\w+)!-m \'$macroDir'/\1.sjs!g' <<< $macroModNames)
+
+sjs --readable-names $macroIncludes <($thisDir/indent_to_braces $inFile) $sweetOpts $outOpt $inFile
 
 
