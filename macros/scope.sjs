@@ -10,12 +10,14 @@ macro scope{
 }
 */
 
+/*
 macro ($){
   case {$ctx $args:ident (,) ...{$body ...}} => {
     var self = makeIdent("self", #{$ctx});
     letstx $self = [self];
-    return #{function($args (,) ... ){var $self = {}; $body ...}}
+    return #{function($args (,) ... ){var $self = {}; autovar{$body  ...}}}
   }
 }
 
 export ($)
+*/
