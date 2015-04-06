@@ -26,15 +26,27 @@ If no output file is specified with `-o`, result is printed to stdout.
 ``` js
 // Create unbound functions 
 var add = λ(x, y) -> x + y
-add(1, 2) === 3
+add(1, 2) === 3;
+
+
+//Function application
+foo! a, b, c; // Calls foo with arguments a,b,c
+
+// Named functions
+fun foo a b
+  console.log! 'Foo called with a='+a+' b='+b
 
 // Chain calls
 10 |> foo |> mulBy(2) |> console.log
 
+// Also works with tuples
+(a,42, b) |> foo |> bar; // Result: bar(foo(a,42,b));
+
+
 // Create bound functions 
 DB.getResource('foo', λ(err, resp) =>
   if (err)
-    err |> prettify |> console.log
+    err |> prettify |> console.log;
 )
  
 // Curry functions by leaving off the tupled arguments 
@@ -47,10 +59,8 @@ var nonsense = λ(x, y)(s, t) f -> 42
 // Placeholders using square brackets and `#` 
 var str = λ[#.toString()]
 var sub = λ[# - #]
-sub(2, 1) === 1
+sub(2, 1) === 1;
 
-// Pipe tuples to functions
-(a,42, b) |> foo |> bar; // Result: bar(foo(a,42,b));
 
 // Multiply all elements in arr by 2, and print results
 (arr, λ[#*2]) |> map |> console.log;
@@ -63,7 +73,6 @@ var foo = λ(start)->
   return λ->
     ++c
     console.log(c)
-
 
 ```
 
