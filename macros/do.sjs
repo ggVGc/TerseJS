@@ -1,4 +1,3 @@
-/*
 macro do{
   rule { {$body ... }} => {
     (function(){$body ...}())
@@ -6,4 +5,3 @@ macro do{
 }
 
 export (do)
-*/

@@ -9,8 +9,8 @@ import Data.List
 import Data.List.Utils
 import qualified Text.Show.Pretty as PR
 
-indentOutString = "{"
-dedentOutString = "};"
+indentOutString = "{ autovar{"
+dedentOutString = "}};"
 
 data Tree = Node [Tree] | Leaf String
   deriving (Show)
