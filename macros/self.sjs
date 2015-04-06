@@ -1,12 +1,20 @@
 macro @ {
-  case {_ fun $name:ident $args:ident ...} => {
-    letstx $self = [makeIdent('self', #{$name})];
+
+  case {$ctx $args:ident (,) ...{$body ...}} => {
+    var self = makeIdent("self", #{$ctx});
+    letstx $self = [self];
+    return #{function($args (,) ... ){var $self = {}; $body  ...; return $self;}}
+  }
+  case {$ctx fun $name:ident $args:ident ...} => {
+    letstx $self = [makeIdent('self', #{$ctx})];
     return #{$self.$name = function($args (,) ...)};
   }
-  case {_ $val:ident} => {
-    letstx $self = [makeIdent('self', #{$val})];
+  case {$ctx $val:ident} => {
+    letstx $self = [makeIdent('self', #{$ctx})];
      return #{$self.$val};
   }
+
+
   rule {} => {
      self
   }
