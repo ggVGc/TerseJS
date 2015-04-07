@@ -11,6 +11,9 @@ macro (autovar) {
   rule{{$ex;$rest ...}}=>{
     $ex; autovar{$rest ...}
   }
+  rule{{; $rest ...}}=>{
+    autovar{$rest...}
+  }
   rule{{$rest ...}}=>{
     $rest ...
   }
@@ -24,8 +27,5 @@ let (var) = macro{
     var $e...
   }
 }
-
-
-
 
 export (var);

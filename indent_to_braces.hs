@@ -2,7 +2,6 @@ import Control.Applicative
 import Data.Char (isSpace)
 import Data.Either.Utils (forceEither)
 import Data.Monoid
-import System.Environment (getArgs)
 import Text.Parsec hiding (many, optional, (<|>))
 import Text.Parsec.Indent
 import Data.List
@@ -10,7 +9,7 @@ import Data.List.Utils
 import qualified Text.Show.Pretty as PR
 
 indentOutString = "{"
-dedentOutString = "};"
+dedentOutString = "}"
 
 data Tree = Node [Tree] | Leaf String
   deriving (Show)
@@ -30,7 +29,7 @@ showIndent indLevel = concat $ replicate indLevel "  "
 showTreeRec indLevel (Node (Leaf "__$$INDENT$$__":Leaf lf:children)) = "\n" <> showIndent indLevel <> lf <> indentOutString <>concatMap(showTreeRec (indLevel+1)) children
 showTreeRec indLevel (Node children) = "\n" <> showIndent indLevel <> concatMap (showTreeRec (indLevel+1)) children
 showTreeRec indLevel (Leaf "__$$DEDENT$$__")     = "\n"++ showIndent (indLevel-1)  ++dedentOutString++""
-showTreeRec _ (Leaf text)     = text <> "; "
+showTreeRec _ (Leaf text)     = " ; "<>text <> " ; "
 
 showTree tree = drop 2 $ showTreeRec (-1) tree
 
@@ -40,30 +39,11 @@ aNodeHeader = many1 aLeaf <* spaces
 aLeaf = Leaf <$> (many1 (satisfy (not . isSpace)) <* many (oneOf " \t"))
 makeNode leaves nodes = Node $ leaves <> nodes
 
-example = unlines [
-    "lorem ipsum",
-    "dolor1",
-    "dolor2",
-    "    ",
-    "    dolor3",
-    "    sit amet",
-    "    consectetur",
-    "        adipiscing elrt dapibus",
-    "        Ho ho ho ho",
-    "    sodales",
-    "urna",
-    "    facilisis"
-  ]
-
-{-insertEmptyLineComments = -}
-
-
 parseIndentedTree input = runIndent "" $ runParserT aTree () "" input
 
 main = do
-    args <- getArgs
-    input <- if null args then return example else readFile $ head args
-    let parsedTree = transformTree $ forceEither $ parseIndentedTree input
+    content <- getContents
+    let parsedTree = transformTree $ forceEither $ parseIndentedTree content
     let flattened = flattenNodes $ transformTree parsedTree
     {-putStrLn "Parsed"-}
     {-putStrLn $ PR.ppShow parsedTree-}

@@ -12,7 +12,7 @@ EOF
 
 sweetOpts=""
 compile=false
-while getopts "h?ocs:" opt; do
+while getopts "h?o:cs:" opt; do
     case "$opt" in
     h|\?)
         show_help
@@ -35,17 +35,20 @@ if $compile; then
    outFile=$(basename $inFile | cut -d. -f1).js
 fi
 
-outOpt=""
-if [ -n "$outFile" ]; then
-   outOpt=" -o $outFile"
-fi
-
 macroModNames=autovar,do,func_apply,conditionals,self,pipe,lambda_chop,scope
 
 thisDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )
 macroDir=$thisDir/../macros
 macroIncludes=$(eval "echo -m\ $macroDir/{"$macroModNames"}.sjs")
 
-sjs --readable-names $macroIncludes <($thisDir/indent_to_braces $inFile) $sweetOpts $outOpt $inFile
 
+cmd(){
+   sjs --readable-names $macroIncludes <(cat $inFile | $thisDir/preserve_empty_lines | $thisDir/indent_to_braces ) $sweetOpts $inFile | $thisDir/preserve_empty_lines -r | $thisDir/post_process
+}
+
+if [ -n "$outFile" ]; then
+   cmd | cat > "$outFile"
+else
+   cmd
+fi
 
