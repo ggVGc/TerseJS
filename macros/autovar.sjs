@@ -15,4 +15,17 @@ macro (autovar) {
     $rest ...
   }
 }
-export (autovar);
+
+let (var) = macro{
+  rule{{$body...}}=>{
+    autovar{$body...}
+  }
+  rule{$e...}=>{
+    var $e...
+  }
+}
+
+
+
+
+export (var);
