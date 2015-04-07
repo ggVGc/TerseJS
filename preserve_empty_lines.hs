@@ -1,4 +1,5 @@
 import Data.Char (isSpace)
+import Data.List (intercalate)
 import System.Environment (getArgs)
 
 
@@ -29,6 +30,6 @@ addCommentToEmptyLines lines = lines
 main = do
     args <- getArgs
     content <- getContents
-    let action = if (length args>0 &&length args>0 &&  (removeSpaces (args!!0)) =="-r") then removeComments else addCommentToEmptyLines
+    let action = if (intercalate "" args)=="-r" then removeComments else addCommentToEmptyLines
     let processed = action $ lines content
     putStrLn $ unlines processed
