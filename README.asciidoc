@@ -30,11 +30,11 @@ add(1, 2) === 3;
 
 
 //Function application
-foo! a, b, c; // Calls foo with arguments a,b,c
+foo $ a, b, c; // Calls foo with arguments a,b,c
 
 // Named functions
-fun foo a b
-  console.log! 'Foo called with a='+a+' b='+b
+fn foo a b
+  console.log $ 'Foo called with a='+a+' b='+b
 
 // Chain calls
 10 |> foo |> mulBy(2) |> console.log
@@ -63,14 +63,14 @@ sub(2, 1) === 1;
 
 
 // Multiply all elements in arr by 2, and print results
-(arr, λ[#*2]) |> map |> console.log;
+(arr, λ[#*2]) |> map |> console.log
  
 // Shorthand property lambdas 
 var names = arr.map(λ.name)
 
-var foo = λ(start)->
+var foo = λ start
   c = start
-  return λ->
+  return λ
     ++c
     console.log(c)
 
@@ -78,4 +78,4 @@ var foo = λ(start)->
 
 === Thanks:
 
-* https://github.com/natefaubion[natefaubion] for writing lambda_chop, which lies at the core of this project. Thanks a lot!
+* https://github.com/natefaubion[natefaubion] for writing lambda_chop, and helping me a lot in learning sweet.js.
