@@ -7,6 +7,7 @@ import Text.Parsec.Indent
 import Data.List
 import Data.List.Utils
 import qualified Text.Show.Pretty as PR
+import Common
 
 indentOutString = "{"
 dedentOutString = "}"
@@ -29,7 +30,9 @@ showIndent indLevel = concat $ replicate indLevel "  "
 showTreeRec indLevel (Node (Leaf "__$$INDENT$$__":Leaf lf:children)) = "\n" <> showIndent indLevel <> lf <> indentOutString <>concatMap(showTreeRec (indLevel+1)) children
 showTreeRec indLevel (Node children) = "\n" <> showIndent indLevel <> concatMap (showTreeRec (indLevel+1)) children
 showTreeRec indLevel (Leaf "__$$DEDENT$$__")     = "\n"++ showIndent (indLevel-1)  ++dedentOutString++""
-showTreeRec _ (Leaf text)     = " ; "<>text <> " ; "
+showTreeRec _ (Leaf text)
+  | removeSpaces text==")" = text <> " ; "
+  | otherwise = " ; "<>text <> " ; "
 
 showTree tree = drop 2 $ showTreeRec (-1) tree
 

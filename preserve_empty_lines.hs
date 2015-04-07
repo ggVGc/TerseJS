@@ -1,13 +1,8 @@
 import Data.Char (isSpace)
 import Data.List (intercalate)
 import System.Environment (getArgs)
+import Common
 
-
-removeSpaces::String->String
-removeSpaces (x:xs)
-  | x==' '      =removeSpaces xs
-  | otherwise   = x:(removeSpaces xs)
-removeSpaces [] = []
 
 commentContent = "/*___EMPTY_LINE_PLACEHOLDER_HOPE_NOTHING_CLASHES___*/"
 
