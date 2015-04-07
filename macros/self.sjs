@@ -13,16 +13,16 @@ macro funHelper{
 
 
 macro @ {
+  case {$ctx > $rest...} => {
+    letstx $self = [makeIdent('self', #{$ctx})];
+    return #{$self. funHelper $rest...};
+  }
   case {$ctx $args:ident  ...{$body ...}} => {
     var self = makeIdent("self", #{$ctx});
     letstx $self = [self];
     return #{function($args (,) ... ){var $self = {}; $body  ...; return $self;}}
   }
 
-  case {$ctx fun $rest...} => {
-    letstx $self = [makeIdent('self', #{$ctx})];
-    return #{$self. funHelper $rest...};
-  }
 
   case {$ctx $val:ident} => {
     letstx $self = [makeIdent('self', #{$ctx})];
@@ -37,7 +37,18 @@ macro @ {
 export @
 
 
-macro fun{
+macro (@@){
+  case {$ctx $name:ident $args:ident  ...{$body ...}} => {
+    var self = makeIdent("self", #{$ctx});
+    letstx $self = [self];
+    return #{var $name = function($args (,) ... ){var $self = {}; $body  ...; return $self;}}
+  }
+}
+
+export (@@)
+
+
+macro fn{
   case {$ctx $name:ident $args:ident ... {$body ...}} => {
     letstx $fu = [makeKeyword('function', #{$ctx})];
     return #{$fu $name($args (,) ...){$body ...}}
@@ -47,5 +58,5 @@ macro fun{
   }
 }
 
-export (fun)
+export (fn)
 

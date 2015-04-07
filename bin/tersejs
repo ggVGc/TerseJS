@@ -40,7 +40,7 @@ if [ -n "$outFile" ]; then
    outOpt=" -o $outFile"
 fi
 
-macroModNames=autovar,do,fun,func_apply,conditionals,self,pipe,lambda_chop,scope
+macroModNames=autovar,do,func_apply,conditionals,self,pipe,lambda_chop,scope
 
 thisDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )
 macroDir=$thisDir/../macros

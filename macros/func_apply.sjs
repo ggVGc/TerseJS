@@ -1,16 +1,17 @@
-let (!) = macro {
+let ($) = macro {
   case infix{ $func:expr | _ $args:expr (,) ...} => {
     return #{$func($args (,) ...)}
   }
 }
 
-/*
-operator (,,) 5 left { $lhs, $rhs } => #{ $lhs $rhs }
-operator (~) 6 left { $lhs, $rhs } => #{ ($lhs,$rhs) }
-*/
+let (!) = macro {
+  case infix{ $func:expr | _ $rest } => {
+    return #{$func() $rest}
+  }
+}
 
+
+
+
+export ($)
 export (!)
-/*
-export (,,)
-export (~)
-*/

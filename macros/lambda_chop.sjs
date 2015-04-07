@@ -75,7 +75,7 @@ macro $lc__args {
   rule { ( $prev ... ) => { $body ... } } => {
     $lc__curry ( $prev ... ) ( => ) ( $body ... )
   }
-  rule { ( $prev ... ) -> { $body ... } } => {
+  rule { ( $prev ... )  { $body ... } } => {
     $lc__curry ( $prev ... ) ( -> ) ( $body ... )
   }
   rule { ( $prev ... ) => $body:expr } => {
