@@ -12,7 +12,8 @@ EOF
 
 sweetOpts=""
 compile=false
-while getopts "h?o:cs:" opt; do
+preProcessOnly=false
+while getopts "h?o:s:cp" opt; do
     case "$opt" in
     h|\?)
         show_help
@@ -23,6 +24,8 @@ while getopts "h?o:cs:" opt; do
     c)  compile=true
         ;;
     s)  sweetOpts=$OPTARG
+        ;;
+    p)  preProcessOnly=true
         ;;
     esac
 done
@@ -43,7 +46,11 @@ macroIncludes=$(eval "echo -m\ $macroDir/{"$macroModNames"}.sjs")
 
 
 cmd(){
-   sjs --readable-names $macroIncludes <(cat $inFile | $thisDir/preserve_empty_lines | $thisDir/indent_to_braces ) $sweetOpts $inFile | $thisDir/preserve_empty_lines -r | $thisDir/post_process
+   if $preProcessOnly; then
+      cat $inFile | $thisDir/preserve_empty_lines | $thisDir/indent_to_braces
+   else
+      sjs --readable-names $macroIncludes <(cat $inFile | $thisDir/preserve_empty_lines | $thisDir/indent_to_braces ) $sweetOpts $inFile | $thisDir/preserve_empty_lines -r | $thisDir/post_process
+   fi
 }
 
 if [ -n "$outFile" ]; then

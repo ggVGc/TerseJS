@@ -9,8 +9,9 @@ import Data.List.Utils
 import qualified Text.Show.Pretty as PR
 import Common
 
+
 indentOutString = "{"
-dedentOutString = "}"
+dedentOutString = "};"
 
 data Tree = Node [Tree] | Leaf String
   deriving (Show)
@@ -27,12 +28,15 @@ flattenNodes tree = tree
 
 showIndent indLevel = concat $ replicate indLevel "  "
 
+
+showTextLine text
+  | removeSpaces text==emptyLineComment = text
+  | otherwise = text <> ";"
+
 showTreeRec indLevel (Node (Leaf "__$$INDENT$$__":Leaf lf:children)) = "\n" <> showIndent indLevel <> lf <> indentOutString <>concatMap(showTreeRec (indLevel+1)) children
 showTreeRec indLevel (Node children) = "\n" <> showIndent indLevel <> concatMap (showTreeRec (indLevel+1)) children
 showTreeRec indLevel (Leaf "__$$DEDENT$$__")     = "\n"++ showIndent (indLevel-1)  ++dedentOutString++""
-showTreeRec _ (Leaf text)
-  | removeSpaces text==")" = text <> " ; "
-  | otherwise = " ; "<>text <> " ; "
+showTreeRec _ (Leaf text) = showTextLine text
 
 showTree tree = drop 2 $ showTreeRec (-1) tree
 
