@@ -48,6 +48,8 @@ aTree = Node <$> many aNode
 aNode = spaces *> withBlock makeNode aNodeHeader aNode
 aNodeHeader = many1 aLeaf <* spaces
 aLeaf = Leaf <$> (many1 (satisfy (not . isSpace)) <* many (oneOf " \t"))
+
+makeNode::[Tree]->[Tree]->Tree
 makeNode leaves nodes = Node $ leaves <> nodes
 
 parseIndentedTree::String->Either ParseError Tree
