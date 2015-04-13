@@ -1,8 +1,9 @@
+import Text.Parsec.String
 import Control.Applicative
 import Data.Char (isSpace)
 import Data.Either.Utils (forceEither)
 import Data.Monoid
-import Text.Parsec hiding (many, optional, (<|>))
+import Text.Parsec hiding (many, (<|>))
 import Text.Parsec.Indent
 import Data.List
 import Data.List.Utils
@@ -26,18 +27,21 @@ flattenNodes (Node (Leaf lf:Node n:rest)) = flattenNodes $ Node (Leaf  "__$$INDE
 flattenNodes (Node children) = Node (map flattenNodes children)
 flattenNodes tree = tree
 
+showIndent :: Int->String
 showIndent indLevel = concat $ replicate indLevel "  "
 
-
+showTextLine :: String->String
 showTextLine text
   | removeSpaces text==emptyLineComment = text
   | otherwise = text <> ";"
 
+showTreeRec :: Int->Tree->String
 showTreeRec indLevel (Node (Leaf "__$$INDENT$$__":Leaf lf:children)) = "\n" <> showIndent indLevel <> lf <> indentOutString <>concatMap(showTreeRec (indLevel+1)) children
 showTreeRec indLevel (Node children) = "\n" <> showIndent indLevel <> concatMap (showTreeRec (indLevel+1)) children
 showTreeRec indLevel (Leaf "__$$DEDENT$$__")     = "\n"++ showIndent (indLevel-1)  ++dedentOutString++""
 showTreeRec _ (Leaf text) = showTextLine text
 
+showTree :: Tree->String
 showTree tree = drop 2 $ showTreeRec (-1) tree
 
 aTree = Node <$> many aNode
@@ -46,15 +50,12 @@ aNodeHeader = many1 aLeaf <* spaces
 aLeaf = Leaf <$> (many1 (satisfy (not . isSpace)) <* many (oneOf " \t"))
 makeNode leaves nodes = Node $ leaves <> nodes
 
+parseIndentedTree::String->Either ParseError Tree
 parseIndentedTree input = runIndent "" $ runParserT aTree () "" input
 
 main = do
     content <- getContents
     let parsedTree = transformTree $ forceEither $ parseIndentedTree content
     let flattened = flattenNodes $ transformTree parsedTree
-    {-putStrLn "Parsed"-}
-    {-putStrLn $ PR.ppShow parsedTree-}
-    {-putStrLn "\nFlattened"-}
-    {-putStrLn $ PR.ppShow flattened-}
-    {-putStrLn "\nOut"-}
     putStrLn $ showTree flattened
+

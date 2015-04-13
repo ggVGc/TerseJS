@@ -6,7 +6,7 @@ removeSpaces [] = []
 
 removeLonelySemicolons::[String] -> [String]
 removeLonelySemicolons (x:xs)
-  | removeSpaces x==";" = removeLonelySemicolons xs
+  | removeSpaces x==";" = "":removeLonelySemicolons xs
   | otherwise = x:(removeLonelySemicolons xs)
 removeLonelySemicolons lines = lines
 

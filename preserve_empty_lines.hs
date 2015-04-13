@@ -1,5 +1,6 @@
 import Data.Char (isSpace)
 import Data.List (intercalate)
+import Data.String.Utils (replace)
 import System.Environment (getArgs)
 import Common
 
@@ -20,9 +21,13 @@ addCommentToEmptyLines (x:xx:xs)
   | otherwise = x:addCommentToEmptyLines (xx:xs)
 addCommentToEmptyLines lines = lines
 
+stripAllComments::[String]->[String]
+stripAllComments (x:xs) = (replace emptyLineComment "" x):stripAllComments xs
+stripAllComments [] = []
+
 main = do
     args <- getArgs
     content <- getContents
     let action = if (intercalate "" args)=="-r" then removeComments else addCommentToEmptyLines
     let processed = action $ reverse $ lines content
-    putStrLn $ unlines $ reverse processed
+    putStrLn $ unlines $ stripAllComments $ reverse processed

@@ -24,14 +24,14 @@ macro @ {
   }
 
 
-  case {$ctx $val:ident} => {
+  case {$ctx $name:ident} => {
     letstx $self = [makeIdent('self', #{$ctx})];
-     return #{$self.$val};
+     return #{$self.$name};
   }
 
-
-  rule {} => {
-     self
+  case {$ctx} => {
+    letstx $self = [makeIdent('self', #{$ctx})];
+    return #{$self};
   }
 }
 export @
