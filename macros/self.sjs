@@ -1,10 +1,10 @@
 macro funHelper{
   case {$ctx $name:ident $args:ident ... {$body ...}} => {
-    return #{$name = function($args (,) ...){$body ...}}
+    return #{$name = function($args (,) ...){$body ...};}
   }
   case {$ctx $name:ident.$name2:ident $args:ident ... {$body ...}} => {
     letstx $fu = [makeKeyword('function', #{$ctx})];
-    return #{$name.$name2 = $fu($args (,) ...){$body ...}}
+    return #{$name.$name2 = $fu($args (,) ...){$body ...};}
   }
   rule {$name:ident. $rest...} => {
     $name. funHelper $rest...

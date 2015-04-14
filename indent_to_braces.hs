@@ -12,7 +12,7 @@ import Common
 
 
 indentOutString = "{"
-dedentOutString = "};"
+dedentOutString = "}"
 
 data Tree = Node [Tree] | Leaf String
   deriving (Show)
@@ -33,7 +33,8 @@ showIndent indLevel = concat $ replicate indLevel "  "
 showTextLine :: String->String
 showTextLine text
   | removeSpaces text==emptyLineComment = text
-  | otherwise = text <> ";"
+  | otherwise = text
+  {-| otherwise = text <> ";"-}
 
 showTreeRec :: Int->Tree->String
 showTreeRec indLevel (Node (Leaf "__$$INDENT$$__":Leaf lf:children)) = "\n" <> showIndent indLevel <> lf <> indentOutString <>concatMap(showTreeRec (indLevel+1)) children
