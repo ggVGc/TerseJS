@@ -102,9 +102,21 @@ macro λ {
   rule { . $body:expr } => {
     $lc__dotexpr $body
   }
-  rule {} => {
-    $lc__args ()
+
+
+
+  // These two rules switches currying syntax with lambda syntax
+  rule{($args (,) ...)}=>{
+    $lc__args () $args ...
   }
+  rule{$args:ident ...}=>{
+    $lc__args () ($args (,) ...)
+  }
+
+
+  //rule {} => {
+    //$lc__args ()
+  //}
 }
 
 export λ;

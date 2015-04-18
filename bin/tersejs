@@ -1,5 +1,8 @@
 #!/bin/env bash
 
+echo "Compiling..."
+
+
 OPTIND=1         # Reset in case getopts has been used previously in the shell.
 
 outFile=""
@@ -41,7 +44,7 @@ if $compile; then
    outFile=$(basename $inFile | cut -d. -f1).js
 fi
 
-macroModNames=object,autovar,do,func_apply,conditionals,self,pipe,lambda_chop,scope
+macroModNames=object,autovar,do,func_apply,conditionals,self,pipe,lambda_chop,scope,loop,eq
 
 thisDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )
 macroDir=$thisDir/../macros
@@ -49,15 +52,18 @@ macroIncludes=$(eval "echo -m\ $macroDir/{"$macroModNames"}.sjs")
 
 
 sjscmd(){  
-   sjs --readable-names $sweetOpts $macroIncludes <(cat $inFile | $thisDir/preserve_empty_lines | $thisDir/indent_to_braces ) | $thisDir/preserve_empty_lines -r | $thisDir/post_process
+   #sjs --readable-names $sweetOpts $macroIncludes <(cat $inFile | $thisDir/preserve_empty_lines | $thisDir/indent_to_braces ) | $thisDir/preserve_empty_lines -r | $thisDir/post_process
+   sjs --readable-names $sweetOpts $macroIncludes <(cat $inFile |  $thisDir/indent_to_braces ) | $thisDir/post_process
 }
 
 cmd(){
    if $preProcessOnly; then
-      cat $inFile | $thisDir/preserve_empty_lines | $thisDir/indent_to_braces
+      #cat $inFile | $thisDir/preserve_empty_lines | $thisDir/indent_to_braces
+      cat $inFile | $thisDir/indent_to_braces
    else
       if $onlySjs; then
-         sjs --readable-names $sweetOpts $macroIncludes $inFile | $thisDir/preserve_empty_lines -r | $thisDir/post_process
+         #sjs --readable-names $sweetOpts $macroIncludes $inFile | $thisDir/preserve_empty_lines -r | $thisDir/post_process
+         sjs --readable-names $sweetOpts $macroIncludes $inFile | $thisDir/post_process
       else
         sjscmd
       fi
@@ -65,7 +71,21 @@ cmd(){
 }
 
 if [ -n "$outFile" ]; then
-   cmd | cat > "$outFile"
+   errors=$( { cmd | cat > "$outFile" ;} 2>&1 )
+   if [ -z "$errors" ]; then
+      echo "Success!"
+   else
+      echo "Failed:"
+      echo ""
+      echo "$errors"
+      echo -n "setTimeout(function(){var e=document.createElement('p');e.innerHTML='" > "$outFile"
+      echo -n "$errors" | sed ':a;N;$!ba;s/\n/\<\/br\>/g'  >> "$outFile"
+      echo "';var b = document.getElementsByTagName('body')[0];b.insertBefore(e, b.children[0]);}, 200);" >> "$outFile"
+
+      #echo -n "console.log('"> "$outFile"
+      #echo -n "$errors" | sed ':a;N;$!ba;s/\n/\\n/g'  >> "$outFile"
+      #echo "');" >> "$outFile"
+   fi
 else
    cmd
 fi
