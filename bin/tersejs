@@ -44,7 +44,7 @@ if $compile; then
    outFile=$(basename $inFile | cut -d. -f1).js
 fi
 
-macroModNames=object,autovar,do,func_apply,conditionals,self,pipe,lambda_chop,loop,eq
+macroModNames=object,autovar,do,func_apply,conditionals,self,pipe,lambda_chop,loop,eq,partial
 
 thisDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )
 macroDir=$thisDir/../macros
