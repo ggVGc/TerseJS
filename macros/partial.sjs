@@ -1,11 +1,17 @@
 
 // Depends on underscore.js
 
-let (~) = macro {
-  case infix{ $func:expr | $ctx $args:expr (,) ...} => {
-    letstx $underscore = [makeIdent('_', #{$ctx})];
-    return #{$underscore.partial($func, $args (,) ...)}
+let partial = macro {
+  case {_ ($func:expr) (($vals:expr (,) ...))} => {
+    letstx $underscore = [makeIdent('_', #{$func})];
+    return #{$underscore.partial($func, $vals (,) ...)}
+  }
+  case {_ ($func:expr) ($val:expr)} => {
+    letstx $underscore = [makeIdent('_', #{$func})];
+    return #{$underscore.partial($func, $val)}
   }
 }
+
+operator (~) 5 left { $lhs, $rhs } => #{ partial $lhs $rhs }
 
 export (~)
