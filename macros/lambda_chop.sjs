@@ -106,7 +106,7 @@ macro λ {
 
 
   // These two rules switches currying syntax with lambda syntax
-  rule{($args (,) ...)}=>{
+  rule{($args ...)}=>{
     $lc__args () $args ...
   }
   rule{$args:ident ...}=>{
