@@ -5,6 +5,12 @@ macro (autovar) {
   rule{{ var $name:ident=$val:expr; $rest ...} }=>{
     var $name = $val; autovar{$rest ...}
   }
+  rule{{ var $name:ident; $rest ...} }=>{
+    var $name; autovar{$rest ...}
+  }
+  rule{{ $name:ident; $rest ...} }=>{
+    var $name; autovar{$rest ...}
+  }
   rule{{ $name:ident=$val:expr; $rest ...} }=>{
     var $name = $val; autovar{$rest ...}
   }
