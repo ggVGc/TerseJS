@@ -24,55 +24,55 @@ If no output file is specified with `-o`, result is printed to stdout.
 
 === Examples:
 ``` js
-// Create unbound functions 
-var add = λ(x, y) -> x + y
-add(1, 2) === 3;
 
+// Object/module definition
+// @ is just shorthand for 'self', which is an object returned by the end of a @@-block
+// @foo and self.foo are equivalent and both can be used
+@@makeFoo start
+  c = start // lexically scoped
+  @printOnInc = true // Object property
+  @> next // Object function property
+    ++c;
+    if self.printOnInc // equivalent to @printOnInc
+      console.log| c;
+var f = makeFoo| 2; // Create foo with start=2
+f.next!; // prints 3
+f.printOnInc=false;
+f.next!; // nothing
+f.printOnInc=true;
+f.next!; // prints 5
 
 //Function application
-foo $ a, b, c; // Calls foo with arguments a,b,c
+foo| a, b, c; // foo(a,b,d)
+
+//Shorthand function application with no argument
+foo!; // foo();
+
+// Partial application
+var bar = foo~42; // bar = function(b,c){ return foo(42, b, c); } 
 
 // Named functions
 fn foo a b
-  console.log $ 'Foo called with a='+a+' b='+b
+  console.log| 'Foo with a='+a+' b='+b;
 
-// Chain calls
-10 |> foo |> mulBy(2) |> console.log
+//Function names can be object properties
+fn foo.bar x
+  console.log("I am foo.bar with value "+x);
 
-// Also works with tuples
-(a,42, b) |> foo |> bar; // Result: bar(foo(a,42,b));
+// Anonymous functions 
+var f = λ x y // function(x,y){return x+y;}
+  return x + y;
+//use arrow for automatic return
+var f = λ x y -> x+y
 
+// Curry by wrapping arguments in parens
+var always = λ(x y) -> x
+always(42)(12) === 42;
 
-// Create bound functions 
-DB.getResource('foo', λ(err, resp) =>
-  if (err)
-    err |> prettify |> console.log;
-)
- 
-// Curry functions by leaving off the tupled arguments 
-var always = λ x y -> x
-always(42)(12) === 42
- 
-// Mix and match for multiple argument lists 
-var nonsense = λ(x, y)(s, t) f -> 42
- 
-// Placeholders using square brackets and `#` 
-var str = λ[#.toString()]
-var sub = λ[# - #]
+// Placeholders using square brackets and `#`. Automatic return
+var str = λ[#.toString()];
+var sub = λ[# - #];
 sub(2, 1) === 1;
-
-
-// Multiply all elements in arr by 2, and print results
-(arr, λ[#*2]) |> map |> console.log
- 
-// Shorthand property lambdas 
-var names = arr.map(λ.name)
-
-var foo = λ start
-  c = start
-  return λ
-    ++c
-    console.log(c)
 
 ```
 
