@@ -25,6 +25,7 @@ If no output file is specified with `-o`, result is printed to stdout.
 === Examples:
 ``` js
 
+
 // Object/module definition
 // @ is just shorthand for 'self', which is an object returned by the end of a @@-block
 // @foo and self.foo are equivalent and both can be used
@@ -73,6 +74,34 @@ always(42)(12) === 42;
 var str = λ[#.toString()];
 var sub = λ[# - #];
 sub(2, 1) === 1;
+
+// Chain calls
+10 |> foo |> mulBy(2) |> console.log;
+// Also works with tuples
+(a,42, b) |> foo |> bar; // Result: bar(foo(a,42,b));
+
+// Multiply all elements in arr by 2, and print results
+(arr, λ[#*2]) |> map |> console.log;
+ 
+// Shorthand property lambdas 
+var names = arr.map| λ.name;
+
+
+//do-block, wraps block in (function(){}())
+var someGlobalState;
+do
+  var tmp = 41;
+  var tmp2 = tmp+1;
+  someGlobalState.update| tmp2;
+// tmp and tmp2 not in scope outside of do-block
+
+// Bound functions.
+// => arrow makes sure the anonymous function is bound to the current 'this'-value
+this.num = 42;
+DB.getResource| 'important_thing', λ resp =>
+  console.log| "DB responded with "+resp;
+  console.log| this.num+" is still 42";
+
 
 ```
 
