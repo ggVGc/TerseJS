@@ -48,7 +48,10 @@ macroModNames=object,autovar,do,func_apply,conditionals,self,pipe,lambda_chop,lo
 
 thisDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )
 macroDir=$thisDir/../macros
-macroIncludes=$(eval "echo -m\ $macroDir/{"$macroModNames"}.sjs")
+#macroIncludes=$(eval "echo -m\ $macroDir/{"$macroModNames"}.sjs")
+macroPaths=$(eval "echo $macroDir/{"$macroModNames"}.sjs")
+cat $macroPaths > "$macroDir/combined.sjs"
+macroIncludes=" -m $macroDir/combined.sjs"
 
 
 sjscmd(){  
