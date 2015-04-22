@@ -49,6 +49,11 @@ foo| a, b, c; // foo(a,b,d)
 //Shorthand function application with no argument
 foo!; // foo();
 
+//Object cascading
+foo.bar&
+  #num = #memFoo! // foo.bar.num = foo.bar.memFoo();
+  var x = #.pos.x; // var x = foo.bar.pos.x;
+
 // Partial application
 var bar = foo~42; // bar = function(b,c){ return foo(42, b, c); } 
 
