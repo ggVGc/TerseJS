@@ -1,3 +1,4 @@
+/*
 macro pipe {
   rule { (($val ...)) ($prop:ident . $rest ...) } => {
      $prop. pipe ($val...) ($rest...)
@@ -40,4 +41,8 @@ macro pipe {
 
 operator (|>) 4 left { $lhs, $rhs } => #{ pipe $lhs $rhs }
 
+export (|>)
+*/
+
+operator (|>) 4 left { $lhs, $rhs } => #{ $rhs($lhs)}
 export (|>)
