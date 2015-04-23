@@ -59,17 +59,17 @@ f.next!;
 // prints 5
 
 //Function application
-foo| a, b, c;
-// foo(a,b,d)
+foo| m, n
+// foo(m, n)
 
 //Shorthand function application with no argument
 foo!;
 // foo();
 
 //Object cascading
-foo.bar $
+foo.bar...
   ..num = ..memFoo! // foo.bar.num = foo.bar.memFoo();
-  var x = ..pos.x; // var x = foo.bar.pos.x;
+  var posX = ..pos.x; // var x = foo.bar.pos.x;
 
 // Partial application
 var bar = foo~42;

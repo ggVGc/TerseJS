@@ -34,7 +34,7 @@ foo!;
 // foo();
 
 //Object cascading
-foo.bar $
+foo.bar...
   ..num = ..memFoo! // foo.bar.num = foo.bar.memFoo();
   var posX = ..pos.x; // var x = foo.bar.pos.x;
 
