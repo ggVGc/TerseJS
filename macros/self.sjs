@@ -23,7 +23,6 @@ macro @ {
     return #{function($args (,) ... ){var $self = {}; $body  ...; return $self;}}
   }
 
-
   case {$ctx $name:ident} => {
     letstx $self = [makeIdent('self', #{$ctx})];
      return #{$self.$name};

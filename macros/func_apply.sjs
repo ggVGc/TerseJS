@@ -10,8 +10,8 @@ let (|) = macro {
 }
 
 let (!) = macro {
-  case infix{ $func | _ $rest } => {
-    return #{$func() $rest}
+  case infix{ $pre... $func| _ $rest } => {
+    return #{$pre... $func() $rest}
   }
   rule {$fallThrough} => {
     !$fallThrough

@@ -31,7 +31,6 @@ If no output file is specified with `-o`, result is printed to stdout.
 === Examples:
 ``` js
 
-
 // Object/module definition
 // @ is just shorthand for 'self', which is an object returned by the end of a @@-block
 // @foo and self.foo are equivalent and both can be used
@@ -56,9 +55,9 @@ foo| a, b, c; // foo(a,b,d)
 foo!; // foo();
 
 //Object cascading
-foo.bar&
-  #num = #memFoo! // foo.bar.num = foo.bar.memFoo();
-  var x = #.pos.x; // var x = foo.bar.pos.x;
+foo.bar $
+  ..num = ..memFoo! // foo.bar.num = foo.bar.memFoo();
+  var x = ..pos.x; // var x = foo.bar.pos.x;
 
 // Partial application
 var bar = foo~42; // bar = function(b,c){ return foo(42, b, c); } 
@@ -107,8 +106,6 @@ this.num = 42;
 DB.getResource| 'important_thing', λ resp =>
   console.log| "DB responded with "+resp;
   console.log| this.num+" is still 42";
-
-
 ```
 
 === Thanks:
