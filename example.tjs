@@ -44,6 +44,9 @@ var f = λ x y // function(x,y){return x+y;}
 //use arrow for automatic return
 var f = λ x y -> x+y
 
+//lam is a synonym for λ, this also works
+var double = lam x -> x*2;
+
 // Curry by wrapping arguments in parens
 var always = λ(x y) -> x
 always(42)(12) === 42;
