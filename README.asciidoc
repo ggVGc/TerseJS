@@ -31,28 +31,40 @@ If no output file is specified with `-o`, result is printed to stdout.
 === Examples:
 ``` js
 
+
 // Object/module definition
 // @ is just shorthand for 'self', which is an object returned by the end of a @@-block
 // @foo and self.foo are equivalent and both can be used
 @@makeFoo start
-  c = start // lexically scoped
-  @printOnInc = true // Object property
-  @> next // Object function property
+  c = start
+  // lexically scoped
+  @printOnInc = true
+  // Object property
+  @> next
+    // Object function property
     ++c;
-    if self.printOnInc // equivalent to @printOnInc
+    if self.printOnInc
+      // equivalent to @printOnInc
       console.log| c;
-var f = makeFoo| 2; // Create foo with start=2
-f.next!; // prints 3
+
+var f = makeFoo| 2;
+// Create foo with start=2
+f.next!;
+// prints 3
 f.printOnInc=false;
-f.next!; // nothing
+f.next!; 
+// nothing
 f.printOnInc=true;
-f.next!; // prints 5
+f.next!;
+// prints 5
 
 //Function application
-foo| a, b, c; // foo(a,b,d)
+foo| a, b, c;
+// foo(a,b,d)
 
 //Shorthand function application with no argument
-foo!; // foo();
+foo!;
+// foo();
 
 //Object cascading
 foo.bar $
@@ -60,7 +72,8 @@ foo.bar $
   var x = ..pos.x; // var x = foo.bar.pos.x;
 
 // Partial application
-var bar = foo~42; // bar = function(b,c){ return foo(42, b, c); } 
+var bar = foo~42;
+// bar = function(b,c){ return foo(42, b, c); } 
 
 // Named functions
 fn foo a b
@@ -71,8 +84,10 @@ fn foo.bar x
   console.log("I am foo.bar with value "+x);
 
 // Anonymous functions 
-var f = λ x y // function(x,y){return x+y;}
+var f = λ x y 
   return x + y;
+// function(x,y){return x+y;}/
+
 //use arrow for automatic return
 var f = λ x y -> x+y
 
@@ -92,7 +107,8 @@ var sub = λ[# - #];
 sub(2, 1) === 1;
 
 // Pipe results
-10 |> mulBy~2 |> console.log; // console.log(mulBy2(10))
+10 |> mulBy~2 |> console.log;
+// console.log(mulBy2(10))
 
 // Shorthand property lambdas 
 var names = arr.map| λ.name;
@@ -112,7 +128,6 @@ this.num = 42;
 DB.getResource| 'important_thing', λ resp =>
   console.log| "DB responded with "+resp;
   console.log| this.num+" is still 42";
-
 
 ```
 
