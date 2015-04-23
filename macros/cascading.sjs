@@ -1,5 +1,5 @@
 // This is a ridulous mess...
-macro ($){
+macro (...){
   case infix{ $name:expr | _ {$rest...} } => {
     var here = #{ here };
     var name = makeDelim('()', unwrapSyntax(#{$name}).inner, here);
@@ -10,7 +10,7 @@ macro ($){
             n = i<ss.length-1?ss[i+1]:null,
             n2 = i<ss.length-2?ss[i+2]:null;
 
-        if(n && n.token.value === '$'){
+        if(s.token.value === '...'){
           return ss;
         }
         if (n && n.token.type === s.token.type && s.token.type===parser.Token.Punctuator
@@ -53,4 +53,4 @@ macro ($){
 */
 
 
-export ($)
+export (...)
