@@ -1,33 +1,42 @@
+// This is a ridulous mess...
+macro ($){
+  case infix{ $name:expr | _ {$rest...} } => {
+    var here = #{ here };
+    var name = makeDelim('()', unwrapSyntax(#{$name}).inner, here);
+    function go(ss) {
+      var i, a = [];
+      for(i=0;i<ss.length;++i){
+        var s = ss[i],
+            n = i<ss.length-1?ss[i+1]:null,
+            n2 = i<ss.length-2?ss[i+2]:null;
 
-/*
-macro $cascade{
-  rule{$name $pre... & $thing...& $rest...}=>{
-    $pre...
-    $name.$thing...
-    $cascade $name & $rest...
-  }
-  rule{$name & $thing...& $rest...}=>{
-    $name.$thing...
-    $cascade $name & $rest...
-  }
-  rule{$name & $thing...}=>{
-    $name.$thing...
-  }
-  rule{$name;}=>{
-    
-  }
-  rule{$all...}=>{
-    $all...
+        if(n && n.token.value === '$'){
+          return ss;
+        }
+        if (n && n.token.type === s.token.type && s.token.type===parser.Token.Punctuator
+            && n.token.value === s.token.value && s.token.value === '.') {
+          ss[i] = name;
+          if(n2===null ||n2.token.type !== parser.Token.Identifier){
+            ss.splice(i+1, 1);
+          }
+        }
+        if (s.token.type === parser.Token.Delimiter) {
+          s.expose();
+          s.token.inner = go(s.token.inner);
+          ss[i] = s;
+        }
+      }
+      return ss;
+    }
+    var ret = go(#{$rest...});
+    return ret;
   }
 }
-*/
 
 
+/*
 macro ($){
-  rule infix{ $name:expr | {$rest... }} => {
-    $name $ $rest...
-  }
-  rule infix{ $name:expr | $rest... } => {
+  rule infix{ $name:expr | {$rest...} } => {
     macro (..){
       case {$ctx $iname:ident} => {
         return #{ $name.$iname }
@@ -41,28 +50,7 @@ macro ($){
     $rest...
   }
 }
-
+*/
 
 
 export ($)
-
-
-  /*
-     let (&) = macro {
-     case {$ctx {$body ...}} => {
-     letstx $obj = [makeIdent("_obj", #{$ctx})];
-     return #{function ($obj){$body  ...; return $obj;}}
-     }
-     case {$ctx $name:ident} => {
-     letstx $obj = [makeIdent('_obj', #{$ctx})];
-     return #{ $obj.$name }
-     }
-     case {$ctx} => {
-     letstx $obj = [makeIdent('_obj', #{$ctx})];
-     return #{
-     $obj
-     }
-     }
-     }
-
-*/
