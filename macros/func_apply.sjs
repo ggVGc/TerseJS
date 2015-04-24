@@ -1,25 +1,19 @@
 
 
 
-let (|) = macro {
-  // We need commans to separate arguments, to avoid parsing foo| a (b+c) as a
-  // javascript function application
-  case infix{ $func:expr | _ $args:expr (,) ...} => {
-    return #{$func($args (,) ...)}
-  }
-}
 
 let (!) = macro {
-  case infix{ $pre... $func| _ $rest } => {
+  case infix{ $pre... $func:ident| _ $rest } => {
     return #{$pre... $func() $rest}
   }
-  rule {$fallThrough} => {
-    !$fallThrough
+  case infix{ $pre... $func:ident| _  } => {
+    return #{$pre... $func()}
+  }
+  rule infix{$pre... | $rest...} => {
+    $pre... !$rest...
   }
 }
 
-
-
-
-export (|)
 export (!)
+
+
