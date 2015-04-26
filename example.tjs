@@ -3,35 +3,37 @@
 // @ is just shorthand for 'self', which is an object returned by the end of a @@-block
 // @foo and self.foo are equivalent and both can be used
 @@makeFoo start
-  c = start
-  // lexically scoped
-  @printOnInc = true
-  // Object property
+  c = start; // normal lexically scoped variable
+  @printOnInc = true; // Object property, equivalent to self.printOnInc
+
+  // '@> next' is shorthand for self.next = function(){...
   @> next
-    // Object function property
     ++c;
-    if self.printOnInc
-      // equivalent to @printOnInc
+    if @printOnInc
       console.log| c;
 
-var f = makeFoo| 2;
-// Create foo with start=2
-f.next!;
-// prints 3
+var f = makeFoo| 2; // Create foo with start=2
+f.next!;            // prints 3
 f.printOnInc=false;
-f.next!; 
-// nothing
+f.next!;            // nothing
 f.printOnInc=true;
-f.next!;
-// prints 5
+f.next!;            // prints 5
 
-//Function application
-foo| m, n
-// foo(m, n)
 
-//Shorthand function application with no argument
-foo!;
-// foo();
+// Precedence operator. Removes the need for parens in most cases.
+foo $ bar 12 'something' $ baz 42 bob;
+// foo(bar(12, 'something'), baz(42, bob));
+
+// Pipes
+10 |> triple |> console.log; // console.log(triple(10))
+
+// Reverse pipe, function application
+// This just surrounds everything that follows in parens
+foo | bar | 10, baz | 30; // foo(bar(10, baz(30)));
+
+
+//Function invocation (call with no arguments)
+foo!; // foo();
 
 //Object cascading
 foo.bar...
@@ -39,8 +41,7 @@ foo.bar...
   var posX = ..pos.x; // var x = foo.bar.pos.x;
 
 // Partial application
-var bar = foo~42;
-// bar = function(b,c){ return foo(42, b, c); } 
+var bar = foo~42; // bar = function(b,c){ return foo(42, b, c); } 
 
 // Named functions
 fn foo a b
@@ -52,8 +53,7 @@ fn foo.bar x
 
 // Anonymous functions 
 var f = λ x y 
-  return x + y;
-// function(x,y){return x+y;}/
+  return x + y; // function(x,y){return x+y;}/
 
 //use arrow for automatic return
 var f = λ x y -> x+y
@@ -73,9 +73,6 @@ var str = λ[#.toString()];
 var sub = λ[# - #];
 sub(2, 1) === 1;
 
-// Pipe results
-10 |> mulBy~2 |> console.log;
-// console.log(mulBy2(10))
 
 // Shorthand property lambdas 
 var names = arr.map| λ.name;
