@@ -121,13 +121,6 @@ macro (lam){
     λ $all...
   }
 }
-macro (myke){
-  rule{$all...}=>{
-    λ $all...
-  }
-}
-
 
 export λ;
 export (lam);
-export (myke);

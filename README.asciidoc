@@ -94,9 +94,6 @@ var f = λ x y -> x+y
 //lam is a synonym for λ, this also works
 var double = lam x -> x*2;
 
-//so is myke...
-var newMyke = myke oldMyke -> renew| oldMyke;
-
 // Curry by wrapping arguments in parens
 var always = λ(x y) -> x
 always(42)(12) === 42;
@@ -106,10 +103,8 @@ var str = λ[#.toString()];
 var sub = λ[# - #];
 sub(2, 1) === 1;
 
-
 // Shorthand property lambdas 
 var names = arr.map| λ.name;
-
 
 //do-block, wraps block in (function(){}())
 var someGlobalState;
