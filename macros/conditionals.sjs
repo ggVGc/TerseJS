@@ -1,4 +1,9 @@
 let (if) = macro {
+  rule { $cond:expr {$body...};else} => {
+      if ($cond){
+        $body...
+      }else
+  }
   rule { $cond:expr} => {
       if ($cond)
   }
