@@ -1,4 +1,13 @@
 *.hi
 *.o
+*.js_hi
+*.js_o
+dist/*/runmain.js
+dist/*/lib.js
+dist/*/rts.js
+dist/*/out.js
+dist/*/out.stats
+dist/*/manifest.webapp
+dist/*/index.html
 macros/combined.sjs
 README.html

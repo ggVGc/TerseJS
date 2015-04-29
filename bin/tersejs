@@ -53,10 +53,16 @@ macroPaths=$(eval "echo $macroDir/{"$macroModNames"}.sjs")
 cat $macroPaths > "$macroDir/combined.sjs"
 macroIncludes=" -m $macroDir/combined.sjs"
 
+indentToBraces=$thisDir/indent_to_braces
+
+indentToBraces="node $thisDir/../dist/indent_to_braces.jsexe/all.js"
+postProcess="node $thisDir/../dist/post_process.jsexe/all.js"
+#indentToBraces=$thisDir/indent_to_braces
+#postProcess=$thisDir/post_process
 
 sjscmd(){  
    #sjs --readable-names $sweetOpts $macroIncludes <(cat $inFile | $thisDir/preserve_empty_lines | $thisDir/indent_to_braces ) | $thisDir/preserve_empty_lines -r | $thisDir/post_process
-   sjs --readable-names $sweetOpts $macroIncludes <(cat $inFile |  $thisDir/indent_to_braces ) | $thisDir/post_process
+   sjs --readable-names $sweetOpts $macroIncludes <(cat $inFile |  $indentToBraces ) | $postProcess
 }
 
 cmd(){
@@ -66,7 +72,7 @@ cmd(){
    else
       if $onlySjs; then
          #sjs --readable-names $sweetOpts $macroIncludes $inFile | $thisDir/preserve_empty_lines -r | $thisDir/post_process
-         sjs --readable-names $sweetOpts $macroIncludes $inFile | $thisDir/post_process
+         sjs --readable-names $sweetOpts $macroIncludes $inFile | $postProcess
       else
         sjscmd
       fi

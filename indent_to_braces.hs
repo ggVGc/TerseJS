@@ -1,12 +1,11 @@
 import Text.Parsec.String
 import Control.Applicative
 import Data.Char (isSpace)
-{-import Data.Either.Utils (forceEither)-}
+import Data.Either.Utils (forceEither)
 import Data.Monoid
 import Text.Parsec hiding (many, (<|>))
 import Text.Parsec.Indent
 import Data.List
-import Data.List.Utils
 {-import qualified Text.Show.Pretty as PR-}
 import Common
 
@@ -58,8 +57,7 @@ parseIndentedTree input = runIndent "" $ runParserT aTree () "" input
 
 main = do
     content <- getContents
-    {-let parsedTree = transformTree $ forceEither $ parseIndentedTree content-}
-    {-let flattened = flattenNodes $ transformTree parsedTree-}
-    {-putStrLn $ showTree flattened-}
-    putStrLn "sadsa"
+    let parsedTree = transformTree $ forceEither $ parseIndentedTree content
+    let flattened = flattenNodes $ transformTree parsedTree
+    putStrLn $ showTree flattened
 
