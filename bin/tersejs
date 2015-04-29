@@ -55,14 +55,16 @@ macroIncludes=" -m $macroDir/combined.sjs"
 
 indentToBraces=$thisDir/indent_to_braces
 
-indentToBraces="node $thisDir/../dist/indent_to_braces.jsexe/all.js"
-postProcess="node $thisDir/../dist/post_process.jsexe/all.js"
+indentToBraces="node $thisDir/../indent_to_braces.jsexe/all.js"
+postProcess="node $thisDir/../post_process.jsexe/all.js"
 #indentToBraces=$thisDir/indent_to_braces
 #postProcess=$thisDir/post_process
 
+sjs=sjs
+
 sjscmd(){  
-   #sjs --readable-names $sweetOpts $macroIncludes <(cat $inFile | $thisDir/preserve_empty_lines | $thisDir/indent_to_braces ) | $thisDir/preserve_empty_lines -r | $thisDir/post_process
-   sjs --readable-names $sweetOpts $macroIncludes <(cat $inFile |  $indentToBraces ) | $postProcess
+   #$sjs --readable-names $sweetOpts $macroIncludes <(cat $inFile | $thisDir/preserve_empty_lines | $thisDir/indent_to_braces ) | $thisDir/preserve_empty_lines -r | $thisDir/post_process
+   $sjs --readable-names $sweetOpts $macroIncludes <(cat $inFile |  $indentToBraces ) | $postProcess
 }
 
 cmd(){
@@ -71,8 +73,8 @@ cmd(){
       cat $inFile | $thisDir/indent_to_braces
    else
       if $onlySjs; then
-         #sjs --readable-names $sweetOpts $macroIncludes $inFile | $thisDir/preserve_empty_lines -r | $thisDir/post_process
-         sjs --readable-names $sweetOpts $macroIncludes $inFile | $postProcess
+         #$sjs --readable-names $sweetOpts $macroIncludes $inFile | $thisDir/preserve_empty_lines -r | $thisDir/post_process
+         $sjs --readable-names $sweetOpts $macroIncludes $inFile | $postProcess
       else
         sjscmd
       fi

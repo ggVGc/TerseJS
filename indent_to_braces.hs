@@ -1,7 +1,7 @@
 import Text.Parsec.String
 import Control.Applicative
 import Data.Char (isSpace)
-import Data.Either.Utils (forceEither)
+{-import Data.Either.Utils (forceEither)-}
 import Data.Monoid
 import Text.Parsec hiding (many, (<|>))
 import Text.Parsec.Indent
@@ -9,6 +9,9 @@ import Data.List
 {-import qualified Text.Show.Pretty as PR-}
 import Common
 
+forceEither :: Show e => Either e a -> a
+forceEither (Left x) = error (show x)
+forceEither (Right x) = x
 
 indentOutString = "{"
 dedentOutString = "}"
