@@ -69,8 +69,8 @@ sjscmd(){
 
 cmd(){
    if $preProcessOnly; then
-      #cat $inFile | $thisDir/preserve_empty_lines | $thisDir/indent_to_braces
-      cat $inFile | $thisDir/indent_to_braces
+      #cat $inFile | $thisDir/preserve_empty_lines | $indentToBraces
+      cat $inFile | $indentToBraces
    else
       if $onlySjs; then
          #$sjs --readable-names $sweetOpts $macroIncludes $inFile | $thisDir/preserve_empty_lines -r | $thisDir/post_process
