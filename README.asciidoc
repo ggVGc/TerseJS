@@ -73,6 +73,13 @@ foo.bar..
   .num = .memFoo! // foo.bar.num = foo.bar.memFoo();
   var posX = .pos.x; // var x = foo.bar.pos.x;
 
+//Property copying
+foo.bar{a b c} := bab.zoo; // Assigns properties a,b and c from bab.zoo to foo.bar
+// Output:
+//foo.bar.a = bab.zoo.a;
+//foo.bar.b = bab.zoo.b;
+//foo.bar.c = bab.zoo.c;
+
 // Partial application
 var bar = foo~42; // bar = function(b,c){ return foo(42, b, c); } 
 
