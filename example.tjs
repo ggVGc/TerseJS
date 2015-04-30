@@ -36,9 +36,9 @@ foo | bar | 10, baz | 30; // foo(bar(10, baz(30)));
 foo!; // foo();
 
 //Object cascading
-foo.bar...
-  ..num = ..memFoo! // foo.bar.num = foo.bar.memFoo();
-  var posX = ..pos.x; // var x = foo.bar.pos.x;
+foo.bar..
+  .num = .memFoo! // foo.bar.num = foo.bar.memFoo();
+  var posX = .pos.x; // var x = foo.bar.pos.x;
 
 // Partial application
 var bar = foo~42; // bar = function(b,c){ return foo(42, b, c); } 
