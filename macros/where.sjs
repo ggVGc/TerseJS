@@ -39,7 +39,7 @@ export (var);
 macro (where){
   rule infix{ $pre...{$body...};| {$vars...}}=>{
     $pre...{
-      autovar{$vars...}
+      autovar{$vars...;}
       $body...
     }
   }
@@ -52,7 +52,7 @@ macro (where){
     ($thing... where {$rest...})
   }
   rule infix{  function(){$body ...} $extra... | {$rest...}}=>{
-    function(){autovar{$rest...};$body...;} $extra...
+    function(){autovar{$rest...;};$body...;} $extra...
   }
 }
 
