@@ -8,9 +8,6 @@ macro (..){
   }
 
 
-  case infix{ $name:expr | _ {$rest...;} } => {
-    return #{$name .. {$rest...}}
-  }
   case infix{ $name:expr | _ {$rest...} } => {
     var here = #{ here };
     function go(name, ss) {

@@ -35,3 +35,25 @@ let (var) = macro{
 }
 
 export (var);
+
+macro (where){
+  rule infix{ $pre...{$body...};| {$vars...}}=>{
+    $pre...{
+      autovar{$vars...}
+      $body...
+    }
+  }
+  
+  rule infix{  $pre... ($thing...); | {$rest...}}=>{
+    $pre...
+    ($thing... where {$rest...})
+  }
+  rule infix{  ($thing...) | {$rest...}}=>{
+    ($thing... where {$rest...})
+  }
+  rule infix{  function(){$body ...} $extra... | {$rest...}}=>{
+    function(){autovar{$rest...};$body...;} $extra...
+  }
+}
+
+export (where)
