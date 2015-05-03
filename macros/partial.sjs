@@ -31,11 +31,19 @@ macro $partialUnpackArgs{
 }
 
 macro $makePartialFun{
+  case{$ctx ($part...) () ($fun) ($args...)(,$params...) $numPlaceholders}=>{
+    letstx $nul = [makeIdent('null', #{here})];
+    return #{
+      function($args...){
+        return $fun.apply($nul, [$params...].concat(Array.prototype.slice.call(arguments, $numPlaceholders)))
+      }
+    }
+  }
   case{$ctx ($part...) ($thisVal...)($fun) ($args...)(,$params...) $numPlaceholders}=>{
     return #{
       //$part...($fun, [$params...])
       function($args...){
-        $thisVal... .$fun.apply($thisVal..., [$params...].concat(Array.prototype.slice.call(arguments, $numPlaceholders)))
+        return $thisVal... .$fun.apply($thisVal..., [$params...].concat(Array.prototype.slice.call(arguments, $numPlaceholders)))
       }
     }
   }
@@ -44,6 +52,15 @@ macro $makePartialFun{
 macro (~){
   rule infix{$fun...| {$args...}}=>{
     $fun... ~ $args(~)...
+  }
+  case infix{$fun| $ctx $args(~)...}=>{
+    var here = #{ here };
+    letstx $expanded = localExpand(#{$partialUnpackArgs 0 () () ($args(,)...)});
+    letstx $part = [makeIdent('$_$', #{$ctx})];
+    letstx $this = [makeIdent('this', #{$ctx})];
+    return #{
+      $makePartialFun ($part.partial) () ($fun) $expanded
+    }
   }
   case infix{$pre... . $fun| $ctx $args(~)...}=>{
     var here = #{ here };
