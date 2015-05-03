@@ -4,7 +4,7 @@ macro $partialUnpackArgs{
     ($accumParams...)
     $count
   }
-  case{ _ $count ($accumArgs...)($accumParams...) (# , $args(,)...)}=>{
+  case{ _ $count ($accumArgs...)($accumParams...) ($[_] , $args(,)...)}=>{
     var c = unwrapSyntax(#{$count});
     var ch = String.fromCharCode('a'.charCodeAt(0)+c);
     letstx $var = [makeIdent('_'+ch, #{here})];
@@ -16,7 +16,7 @@ macro $partialUnpackArgs{
   rule{$count ($accumArgs...)($accumParams...) ($arg , $args(,)...)}=>{
     $partialUnpackArgs $count ($accumArgs...) ($accumParams... , $arg) ($args(,)...)
   }
-  case{ _ $count ($accumArgs...)($accumParams...) (#)}=>{
+  case{ _ $count ($accumArgs...)($accumParams...) ($[_])}=>{
     var c = unwrapSyntax(#{$count});
     var ch = String.fromCharCode('a'.charCodeAt(0)+c);
     letstx $var = [makeIdent('_'+ch, #{here})];
@@ -31,23 +31,26 @@ macro $partialUnpackArgs{
 }
 
 macro $makePartialFun{
-  case{$ctx ($part...) ($fun) ($args...)(,$params...) $numPlaceholders}=>{
+  case{$ctx ($part...) ($thisVal...)($fun) ($args...)(,$params...) $numPlaceholders}=>{
     return #{
       //$part...($fun, [$params...])
       function($args...){
-        $fun.apply(this, [$params...].concat(Array.prototype.slice.call(arguments, $numPlaceholders)))
+        $thisVal... .$fun.apply($thisVal..., [$params...].concat(Array.prototype.slice.call(arguments, $numPlaceholders)))
       }
     }
   }
 }
 
 macro (~){
-  case infix{$fun | $ctx $args(~)...}=>{
+  rule infix{$fun...| {$args...}}=>{
+    $fun... ~ $args(~)...
+  }
+  case infix{$pre... . $fun| $ctx $args(~)...}=>{
     var here = #{ here };
     letstx $expanded = localExpand(#{$partialUnpackArgs 0 () () ($args(,)...)});
     letstx $part = [makeIdent('$_$', #{$ctx})];
     return #{
-      $makePartialFun ($part.partial) ($fun) $expanded
+      $makePartialFun ($part.partial) ($pre...) ($fun) $expanded
     }
   }
 }
