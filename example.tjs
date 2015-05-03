@@ -1,4 +1,3 @@
-
 // Object/module definition
 // @ is just shorthand for 'self', which is an object returned by the end of a @@-block
 // @foo and self.foo are equivalent and both can be used
@@ -6,8 +5,8 @@
   c = start; // normal lexically scoped variable
   @printOnInc = true; // Object property, equivalent to self.printOnInc
 
-  // '@> next' is shorthand for self.next = function(){...
-  @> next
+  // '@fn' declares member function and is shorthand for self.next = function(){...
+  @fn next
     ++c;
     if @printOnInc
       console.log| c;
@@ -66,7 +65,7 @@ var f = λ x y
 var f = λ x y -> x+y
 
 //lam is a synonym for λ, this also works
-var double = lam x -> x*2;
+var triple = lam x -> x*3;
 
 // Curry by wrapping arguments in parens
 var always = λ(x y) -> x

@@ -13,7 +13,7 @@ macro funHelper{
 
 
 macro @ {
-  case {$ctx > $rest...} => {
+  case {$ctx fn $rest...} => {
     letstx $self = [makeIdent('self', #{$ctx})];
     return #{$self. funHelper $rest...};
   }
