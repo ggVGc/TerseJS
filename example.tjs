@@ -31,6 +31,16 @@ foo $ bar 12 'something' $ baz 42 bob;
 foo | bar | 10, baz | 30; // foo(bar(10, baz(30)));
 
 
+// Lift-Execute
+// Applies each tuple to a given function
+foo <-
+  1,2
+  3,4
+//Output:
+//foo(1,2);
+//foo(3,4);
+
+
 //Function invocation (call with no arguments)
 foo!; // foo();
 

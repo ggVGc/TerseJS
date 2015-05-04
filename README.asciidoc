@@ -31,7 +31,6 @@ If no output file is specified with `-o`, result is printed to stdout.
 === Examples:
 ``` js
 
-
 // Object/module definition
 // @ is just shorthand for 'self', which is an object returned by the end of a @@-block
 // @foo and self.foo are equivalent and both can be used
@@ -39,8 +38,8 @@ If no output file is specified with `-o`, result is printed to stdout.
   c = start; // normal lexically scoped variable
   @printOnInc = true; // Object property, equivalent to self.printOnInc
 
-  // '@> next' is shorthand for self.next = function(){...
-  @> next
+  // '@fn' declares member function and is shorthand for self.next = function(){...
+  @fn next
     ++c;
     if @printOnInc
       console.log| c;
@@ -63,6 +62,16 @@ foo $ bar 12 'something' $ baz 42 bob;
 // Reverse pipe, function application
 // This just surrounds everything that follows in parens
 foo | bar | 10, baz | 30; // foo(bar(10, baz(30)));
+
+
+// Lift-Execute
+// Applies each tuple to a given function
+foo <-
+  1,2
+  3,4
+//Output:
+//foo(1,2);
+//foo(3,4);
 
 
 //Function invocation (call with no arguments)
@@ -99,7 +108,7 @@ var f = λ x y
 var f = λ x y -> x+y
 
 //lam is a synonym for λ, this also works
-var double = lam x -> x*2;
+var triple = lam x -> x*3;
 
 // Curry by wrapping arguments in parens
 var always = λ(x y) -> x
