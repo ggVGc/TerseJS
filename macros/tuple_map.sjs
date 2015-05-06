@@ -1,10 +1,23 @@
-macro (<-) {
-  rule infix { $fn:expr | {$tuple...;$rest(;)...}} => {
-    $fn($tuple...);
-    $fn <- {$rest(;)...}
+
+macro $tupleMap{
+  rule {($f...) (;)}=>{
+    ;
   }
-  rule infix { $fn:expr | {$tuple...}} => {
-    $fn($tuple...)
+  rule {($f...) ()}=>{
+  }
+  rule { ($fn) ($tuple...;$rest...)} => {
+    $fn($tuple...);
+    $tupleMap ($fn) ($rest...)
+  }
+}
+
+macro (<-) {
+
+  case infix { $fn:expr | _ {$body...}} => {
+    letstx $expanded = localExpand(#{$body...});
+    return #{
+     $tupleMap  ($fn) ($expanded)
+    }
   }
 }
 

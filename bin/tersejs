@@ -55,10 +55,10 @@ macroIncludes=" -m $macroDir/combined.sjs"
 
 indentToBraces=$thisDir/indent_to_braces
 
-indentToBraces="node $thisDir/../indent_to_braces.jsexe/all.js"
-postProcess="node $thisDir/../post_process.jsexe/all.js"
-#indentToBraces=$thisDir/indent_to_braces
-#postProcess=$thisDir/post_process
+#indentToBraces="node $thisDir/../indent_to_braces.jsexe/all.js"
+#postProcess="node $thisDir/../post_process.jsexe/all.js"
+indentToBraces=$thisDir/indent_to_braces
+postProcess=$thisDir/post_process
 
 sjs=sjs
 

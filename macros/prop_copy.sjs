@@ -28,13 +28,16 @@ export (:=)
 
 macro (::){
   rule infix { $name:expr | {$prop...;, $restProps...} } => {
-    $name . $prop..., $name :: {$restProps...}
+    $name::{$prop..., $restProps...}
   }
   rule infix { $name:expr | {$prop..., $restProps...} } => {
-    $name . $prop..., $name :: {$restProps...}
+    $name::{$prop...}, $name::{$restProps...}
   }
   rule infix { $name:expr | {$prop...;}}=> {
-    $name . $prop...
+    $name::{$prop...}
+  }
+  rule infix { $name:expr | {[$prop...]}}=> {
+    $name[$prop...]
   }
   rule infix { $name:expr | {$prop...}}=> {
     $name . $prop...
