@@ -36,11 +36,15 @@ macro @ {
 export @
 
 
+
 macro (@@){
   case {$ctx $name:ident $args:ident  ...{$body ...}} => {
     var self = makeIdent("self", #{$ctx});
     letstx $self = [self];
-    return #{function $name($args (,) ... ){var $self = {}; $body  ...; return $self;}}
+    return #{var $name = function($args (,) ... ){var $self = {}; $body  ...; return $self;}}
+  }
+  rule {$name:expr $args:ident...{$body ...}} => {
+    $name = function($args (,) ... ){var $self = {}; $body  ...; return $self;}
   }
 }
 

@@ -5,10 +5,13 @@ removeSpaces (x:xs)
 removeSpaces [] = []
 
 removeLonelySemicolons::[String] -> [String]
-removeLonelySemicolons (x:xs)
-  | removeSpaces x==";" = "":removeLonelySemicolons xs
-  | otherwise = x:(removeLonelySemicolons xs)
+removeLonelySemicolons (x:xx:xs)
+  | removeSpaces x==";" && removeSpaces xx=="}"= removeLonelySemicolons (xx:xs)
+  | removeSpaces x==";" && removeSpaces xx=="};"= removeLonelySemicolons (xx:xs)
+  | removeSpaces x==";" = "":removeLonelySemicolons (xx:xs)
+  | otherwise = x:(removeLonelySemicolons $ xx:xs)
 removeLonelySemicolons lines = lines
+
 
 main = do
     content <- getContents

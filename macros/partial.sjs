@@ -35,7 +35,7 @@ macro $makePartialFun{
     letstx $nul = [makeIdent('null', #{here})];
     return #{
       function($args...){
-        return $fun.apply($nul, [$params...].concat(Array.prototype.slice.call(arguments, $numPlaceholders)))
+        return ($fun.apply($nul, [$params...].concat(Array.prototype.slice.call(arguments, $numPlaceholders))));
       }
     }
   }
@@ -43,7 +43,7 @@ macro $makePartialFun{
     return #{
       //$part...($fun, [$params...])
       function($args...){
-        return $thisVal... .$fun.apply($thisVal..., [$params...].concat(Array.prototype.slice.call(arguments, $numPlaceholders)))
+        return ($thisVal... .$fun.apply($thisVal..., [$params...].concat(Array.prototype.slice.call(arguments, $numPlaceholders))));
       }
     }
   }
