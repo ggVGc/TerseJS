@@ -1,15 +1,52 @@
+/*
 macro ($){
-  case { _ $f:ident $args ... $ $f2:ident $rest...;} => {
-    return #{ ($f($args (,) ...), $ $f2 $rest...); }
+  case infix{  $a... | _ $b... $ $lol...} => {
+    return #{ (($a...)($b...)) $ $lol...}
   }
-  case { _ $f:ident $args ... $ $f2:ident $rest...} => {
-    return #{ ($f($args (,) ...), $ $f2 $rest...) }
+  case { _ $args ... $ $rest...;} => {
+    return #{ (($args (,) ...) $ $rest...); }
   }
-  case { _ $f:ident $args ...;} => {
-    return #{ ($f($args (,) ...)); }
+  case { _ $args ... $ $rest...} => {
+    return #{ (($args (,) ...) $ $rest...) }
   }
-  case { _ $f:ident $args ...} => {
-    return #{ ($f($args (,) ...)) }
+  case { _ $args ...;} => {
+    return #{ (($args (,) ...)); }
+  }
+  case { _ $args ...} => {
+    return #{ (($args (,) ...)) }
+  }
+}
+export ($)
+
+*/
+/*
+
+macro ($){
+  case infix{  $a... | _ $b... $ $rest...} => {
+    return #{ (($a...)($b...)) $ $rest...}
+  }
+  case {  _ $a...;} => {
+    return #{ ($a...); }
+  }
+  case {  _ $a...} => {
+    return #{ (bahjs) }
+  }
+}
+export ($)
+*/
+
+macro ($){
+  rule infix{  $a... | $b... $[$] $rest...; } => {
+    ($a...,$b... $ $rest...);
+  }
+  rule infix{  $a... | $b... $[$] $rest... } => {
+    $a...,$b... $ $rest...
+  }
+  rule {  $a... ;} => {
+    ,($a...);
+  }
+  rule {  $a... } => {
+    ,($a...)
   }
 }
 export ($)

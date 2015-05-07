@@ -1,4 +1,4 @@
-macro (^){
+macro (&){
   rule{{$name:ident : $val:expr; $rest...}}=>{
     {$name : $val, ^$rest...}
   }
@@ -16,4 +16,4 @@ macro (^){
   }
 }
 
-export (^)
+export (&)

@@ -1,5 +1,21 @@
 // This is a ridulous mess...
 macro (..){
+  /*
+  case infix{ $name:ident as $e:expr | _ {$rest... }} => {
+    return #{
+      $name = $e;
+      $name .. {$rest...}
+    }
+  }
+  */
+
+  case infix{ $name:ident as $e:expr | _ {$rest... }} => {
+    return #{
+      var $name = $e;
+      $name .. {$rest...}
+    }
+  }
+
   case infix{ $name:expr | _ {$rest... .. {$kuk...} $apa...} } => {
     return #{
       $name .. {$rest...} .. {$kuk...};
