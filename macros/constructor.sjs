@@ -1,31 +1,37 @@
 
 macro $makeRecord{
-  rule{($typeName) ($self) ($x:ident(.)... public $name:ident $args:ident...{$body...}; $rest...)}=>{ 
+  rule{ ($self) ($x:ident(.)... public $name:ident $args:ident...{$body...}; $rest...)}=>{ 
     $self.$name = function(){
       $body...
     };
-    $makeRecord ($typeName) ($self) ($rest...)
+    $makeRecord  ($self) ($rest...)
   }
-  rule{($typeName) ($self) ($x:ident(.)... private $name:ident $args:ident...{$body...}; $rest...)}=>{ 
+  rule{ ($self) ($x:ident(.)... private $name:ident $args:ident...{$body...}; $rest...)}=>{ 
     function $name($args(,)...){
       $body...
     };
-    $makeRecord ($typeName) ($self) ($rest...)
+    $makeRecord  ($self) ($rest...)
   }
-  rule{($typeName) ($self) ($content...)}=>{ 
+  rule{ ($self) ($content...)}=>{ 
   }
 }
 
 
-macro $selfAssign{
-  rule {$self{var{$self = $e:expr; $restVars...} $body...}}=>{
-    var $self = $e;
-    var{$restVars...}
-    $body...
+macro $makeBody{
+  rule {($self:ident) ($typeName...) ($args...) (extends $extExpr:expr $vars...) ($body...) ($rest...)}=>{
+    $makeBody ($self = $extExpr)  ($typeName...) ($args...) ($vars...) ($body...) ($rest...)
   }
-  rule {$self{$body...}}=>{
-    var $self = {};
-    $body...
+  rule {($self:ident) ($typeName...) ($args...) ($vars...) ($body...) ($rest...)}=>{
+    $makeBody ($self = {})  ($typeName...) ($args...) ($vars...) ($body...) ($rest...)
+  }
+  rule {($self:ident = $selfExpr:expr) ($typeName...) ($args...) ($vars...) ($body...) ($rest...)}=>{
+    $typeName... .create = function($args(,)...){
+      var $self = $selfExpr;
+      var{$vars...}
+      $makeRecord  ($self) ($rest...)
+      $body...
+      return $self;
+    }
   }
 }
 
@@ -35,27 +41,14 @@ macro (constructor){
     letstx $self = [makeIdent('self', #{$ctx})];
     return #{
       $pre... . $typeName = {};
-      $pre... . $typeName.create = function($args(,)...){
-        $selfAssign $self{
-        var{$vars...}
-        $makeRecord ($typeName) ($self) ($rest...)
-        $constructorBody...
-        return $self;
-        }
-      }
+      $makeBody ($self) ($pre... . $typeName) ($args...) ($vars...) ($constructorBody...) ($rest...)
     }
   }
   case {$ctx $typeName:ident $args... {$vars... endvars $constructorBody...}; $rest... end $endTypeName:ident(.)...;}=>{
-    var $typeName = {};
     letstx $self = [makeIdent('self', #{$ctx})];
     return #{
-      $typeName.create = function($args(,)...){
-        var $self = {};
-        var{$vars...}
-        $makeRecord ($typeName) ($self) ($rest...)
-        $constructorBody...
-        return $self;
-      }
+      var $typeName = {};
+      $makeBody ($self) ($typeName) ($args...) ($vars...) ($constructorBody...) ($rest...)
     }
   }
 }
