@@ -24,8 +24,8 @@ macro (..){
   }
 
 
-  case infix{ $name:expr | _ {$rest...} } => {
-    var here = #{ here };
+  case infix{ $name:expr | $ctx {$rest...} } => {
+    var here = #{ $name };
     function go(name, ss) {
       var i, a = [];
       for(i=0;i<ss.length;++i){

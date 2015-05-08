@@ -2,113 +2,81 @@
 macro $processStatics{
   rule{($typeName...) $name:ident $args...{$body...} $rest...}=>{
     $typeName... .$name = function($args(,)...){$body...};
+    $processStatics ($typeName...) $rest...
   }
-  rule{$a...}=>{
-    foo
+  rule{($typeName...) }=>{
   }
 }
 
 macro $processFunctions{
-  rule{ ($statics...) ($self) ($x:ident(.)... static $name:ident $args:ident...{$body...}; $rest...)}=>{ 
-    $processFunctions  ($statics... $name $args...{$body...}) ($self) ($rest...)
+  rule{ ($funcs...) ($statics...)  (constructor $args:ident...{$body...}; $rest...)}=>{ 
+    $processFunctions  ($funcs... (constructor($args...){$body...})) ($statics...)  ($rest...)
   }
 
-  rule{ ($statics...) ($self) ($x:ident(.)... public $name:ident $args:ident...{$body...}; $rest...)}=>{ 
-    $self.$name = function(){
-      $body...
-    };
-    $processFunctions  ($statics...) ($self) ($rest...)
+  rule{ ($funcs...) ($statics...)  ($x:ident(.)... static $name:ident $args:ident...{$body...}; $rest...)}=>{ 
+    $processFunctions  ($funcs...) ($statics... $name $args...{$body...})  ($rest...)
   }
 
-  rule{ ($statics...) ($self) ($x:ident(.)... local $name:ident $args:ident...{$body...}; $rest...)}=>{ 
-    function $name($args(,)...){
-      $body...
-    };
-    $processFunctions  ($statics...) ($self) ($rest...)
+  rule{ ($funcs...) ($statics...)  ($x:ident(.)... public $name:ident $args:ident...{$body...}; $rest...)}=>{ 
+    $processFunctions  ($funcs... (public $name ($args...){$body...})) ($statics...)  ($rest...)
   }
-  rule{ ($statics...)($self) ($content...)}=>{ 
-    statics($statics...)
+
+  rule{ ($funcs...) ($statics...)  ($x:ident(.)... local $name:ident $args:ident...{$body...}; $rest...)}=>{ 
+    $processFunctions  ($funcs... (local $name ($args...){$body...})) ($statics...)  ($rest...)
+  }
+  rule{ ($funcs...) ($statics...) ($content...)}=>{ 
+    ($funcs...) ($statics...)
   }
 }
 
 
+macro $buildBody{
+  rule{$self:ident (local $name:ident ($args...){$body...}) $rest...;}=>{
+    function $name($args(,)...){
+      $body...
+    };
+    $buildBody $self $rest...;
+  }
+  rule{$self:ident (public $name:ident ($args...){$body...}) $rest...;}=>{
+    $self.$name = function($args(,)...){
+      $body...
+    };
+    $buildBody $self $rest...;
+  }
+  rule{$self $all...}=>{
+    $all...
+  }
+}
+
 macro $bodyHelper{
-  rule{($typeName...)($args...) $pre... statics($statics...) $post...}=>{
-    $typeName... = function($args(,)...){
-      $pre...
-      $post...
+  case{$ctx ($self) ($typeName...) ((constructor ($args...){$vars... endvars $consBody...}) $funcs...) ($statics...)}=>{
+    return #{
+      $typeName... .create = function($args(,)...){
+        var $self = {};
+        var{$vars...}
+        $buildBody $self $funcs...;
+        $consBody...
+        return $self;
+      };
+      $processStatics ($typeName...) $statics...
     }
+  }
+  rule{($self)($typeName...) ($funcs...) ($statics...)}=>{
     $processStatics ($typeName...) $statics...
   }
 }
 
-macro $makeBody{
-  rule {($self:ident) ($typeName...) ($args...) (extends $extExpr:expr $vars...) ($body...) ($rest...)}=>{
-    $makeBody ($self = $extExpr)  ($typeName...) ($args...) ($vars...) ($body...) ($rest...)
-  }
-  rule {($self:ident) ($typeName...) ($args...) ($vars...) ($body...) ($rest...)}=>{
-    $makeBody ($self = {})  ($typeName...) ($args...) ($vars...) ($body...) ($rest...)
-  }
-  case {_ ($self:ident = $selfExpr:expr) ($typeName...) ($args...) ($vars...) ($body...) ($rest...)}=>{
+macro (module){
+  case{$ctx $typeName(.)...; $rest... endmodule}=>{
     letstx $expanded = localExpand(#{
-        var $self = $selfExpr;
-        var{$vars...}
-        $processFunctions  () ($self) ($rest...)
-        $body...
-        return $self;
+        $processFunctions  () () ($rest...)
     });
-    return #{
-      $typeName... .create = $bodyHelper ($typeName...)($args...) $expanded
-    }
-  }
-}
-
-
-macro (constructor){
-  case{$ctx $pre... . $typeName:ident $args:ident... {$vars... endvars $constructorBody...}; $rest... end $endTypeName:ident(.)...;}=>{
     letstx $self = [makeIdent('self', #{$ctx})];
     return #{
-      $pre... . $typeName = {};
-      $makeBody ($self) ($pre... . $typeName) ($args...) ($vars...) ($constructorBody...) ($rest...)
-    }
-  }
-  case {$ctx $typeName:ident $args... {$vars... endvars $constructorBody...}; $rest... end $endTypeName:ident(.)...;}=>{
-    letstx $self = [makeIdent('self', #{$ctx})];
-    return #{
-      var $typeName = {};
-      $makeBody ($self) ($typeName) ($args...) ($vars...) ($constructorBody...) ($rest...)
-    }
-  }
-}
-
-export (constructor)
-
-
-/*
-macro (:+){
-  case infix{$typeName:ident | $ctx $name $args... {$body...};}=>{
-    letstx $self = [makeIdent('self', #{$ctx})];
-    return #{
-      $self.$name = function($args(,)...){
-        $body...
+      $typeName(.)...= {};
+      $bodyHelper ($self)($typeName(.)...) $expanded
       }
-    }
   }
 }
 
-export (:+)
-
-
-macro (:-){
-  case infix{$typeName:ident | $ctx $name $args...{$body...};}=>{
-    letstx $self = [makeIdent('self', #{$ctx})];
-    return #{
-      function $name($args(,)...){
-        $body...
-      }
-    }
-  }
-}
-
-export (:-)
-*/
+export (module)
