@@ -34,6 +34,7 @@ macro ($){
 }
 export ($)
 */
+/*
 
 macro ($){
   rule infix{  $a... | $b... $[$] $rest...; } => {
@@ -47,6 +48,20 @@ macro ($){
   }
   rule {  $a... } => {
     ,($a...)
+  }
+}
+export ($)
+*/
+
+
+
+let ($) = macro{
+  case infix{  $a... | _ $b... } => {
+    letstx $exA = localExpand(#{$a...});
+    letstx $exB= localExpand(#{$b...});
+    return #{
+      $exA $exB
+    }
   }
 }
 export ($)
