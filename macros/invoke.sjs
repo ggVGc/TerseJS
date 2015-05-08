@@ -35,6 +35,15 @@ let (!) = macro{
   rule infix{ $f...|.} => {
     $f...().
   }
+  rule infix{ $f...|*} => {
+    $f...()*
+  }
+  rule infix{ $f...|+} => {
+    $f...()+
+  }
+  rule infix{ $f...|-} => {
+    $f...()-
+  }
   rule infix{ $f...|  $args ... , $rest...} => {
     $f...($args (,) ...) ,  $rest...
   }
