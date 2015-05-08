@@ -6,13 +6,19 @@ constructor Foo start
   @printOnInc = true; // Object property, equivalent to self.printOnInc
   endvars // Finish variable declarations
 
+// Lexically scoped function within Foo
+private reset
+  c = 0
+
 // Public method of Foo
-Foo:+next
+public next
   ++c // can access local variable within Foo
   if @printOnInc
     console.log! c
+  if c > 10
+    reset!
     
-end Foo
+end
 
 var f = makeFoo| 2; // Create foo with start=2
 f.next!;            // prints 3
