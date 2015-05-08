@@ -37,31 +37,31 @@ let (!) = macro{
   rule {-} => {
     ()-
   }
-  rule { $args ...;} => {
-    ($args (,) ...);
-  }
-  rule { $args ... λ $rest...;} => {
+  rule { $args:expr ... λ $rest...;} => {
     ($args (,) ..., λ $rest...);
   }
-  rule { $args ... λ $rest...} => {
+  rule { $args:expr ... λ $rest...} => {
     ($args (,) ..., λ $rest...)
   }
-  rule { $args ... , $rest...} => {
+  rule { $args:expr ... , $rest...} => {
     ($args (,) ...) ,  $rest...
   }
-  rule { $args ... >> $rest...} => {
-    ($args (,) ...) >> $rest...
-  }
-  rule { $args ... | $rest...} => {
-    ($args (,) ...) |$rest...
-  }
-  rule { $args ... $ $rest...} => {
-    ($args (,) ...) $ $rest...
-  }
-  rule { $args ...;.} => {
+  rule { $args:expr...;.} => {
     ($args (,) ...).
   }
-  rule {$args ...} => {
+  rule { $args:expr...;} => {
+    ($args (,) ...);
+  }
+  rule { $args:expr... >> $rest...} => {
+    ($args (,) ...) >> $rest...
+  }
+  rule { $args:expr... | $rest...} => {
+    ($args (,) ...) |$rest...
+  }
+  rule { $args:expr... $ $rest...} => {
+    ($args (,) ...) $ $rest...
+  }
+  rule {$args:expr ...} => {
     ($args (,) ...)
   }
 }
