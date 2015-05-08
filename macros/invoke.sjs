@@ -22,15 +22,6 @@ macro $tupleMap{
 
 // This is special cased to handle being within a precedence block(between pairs of $)
 let (!) = macro{
-/*
-  case infix { $fn:expr | _ {$body...}} => {
-    letstx $expanded = localExpand(#{$body...});
-    return #{
-     $tupleMap  ($fn) ($expanded)
-    }
-  }
-
-*/
   rule { ;} => {
     ();
   }
@@ -45,6 +36,9 @@ let (!) = macro{
   }
   rule {-} => {
     ()-
+  }
+  rule { $args ...;} => {
+    ($args (,) ...);
   }
   rule { $args ... λ $rest...;} => {
     ($args (,) ..., λ $rest...);
@@ -67,9 +61,6 @@ let (!) = macro{
   rule { $args ...;.} => {
     ($args (,) ...).
   }
-  rule { $args ...;} => {
-    ($args (,) ...);
-  }
   rule {$args ...} => {
     ($args (,) ...)
   }
@@ -77,3 +68,14 @@ let (!) = macro{
 
 export (!)
 
+
+
+let (<-) = macro{
+  case infix { $fn:expr | _ {$body...}} => {
+    letstx $expanded = localExpand(#{$body...});
+    return #{
+     $tupleMap  ($fn) ($expanded)
+    }
+  }
+}
+export (<-)

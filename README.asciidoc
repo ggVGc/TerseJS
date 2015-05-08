@@ -34,7 +34,8 @@ If no output file is specified with `-o`, result is printed to stdout.
 // Object/module definition
 // @ is just shorthand for 'self', which is an object returned by the end of a @@-block
 // @foo and self.foo are equivalent and both can be used
-constructor Foo start
+module Foo
+constructor start
   c = start;// lexically scoped within Foo. var keyword not needed
   @printOnInc = true; // Object property, equivalent to self.printOnInc
   endvars // Finish variable declarations
@@ -51,9 +52,9 @@ public next
   if c > 10
     reset!
     
-end
+endmodule
 
-var f = makeFoo| 2; // Create foo with start=2
+var f = makeFoo! 2; // Create foo with start=2
 f.next!;            // prints 3
 f.printOnInc=false
 f.next!;          // nothing
@@ -71,7 +72,7 @@ foo | bar | 10, baz | 30; // foo(bar(10, baz(30)));
 
 // Lift-Execute
 // Applies each tuple to a given function
-foo!
+foo <-
   1,2
   3,4
 //Output:
