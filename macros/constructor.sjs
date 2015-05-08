@@ -15,17 +15,33 @@ macro $makeRecord{
   rule{($typeName) ($self) ($content...)}=>{ 
   }
 }
+
+
+macro $selfAssign{
+  rule {$self{var{$self = $e:expr; $restVars...} $body...}}=>{
+    var $self = $e;
+    var{$restVars...}
+    $body...
+  }
+  rule {$self{$body...}}=>{
+    var $self = {};
+    $body...
+  }
+}
+
+
 macro (constructor){
   case{$ctx $pre... . $typeName:ident $args:ident... {$vars... endvars $constructorBody...}; $rest... end $endTypeName:ident(.)...;}=>{
     letstx $self = [makeIdent('self', #{$ctx})];
     return #{
       $pre... . $typeName = {};
       $pre... . $typeName.create = function($args(,)...){
-        var $self = {};
+        $selfAssign $self{
         var{$vars...}
         $makeRecord ($typeName) ($self) ($rest...)
         $constructorBody...
         return $self;
+        }
       }
     }
   }
