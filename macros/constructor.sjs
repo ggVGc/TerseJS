@@ -49,10 +49,17 @@ macro $buildBody{
 }
 
 macro $bodyHelper{
-  case{$ctx ($self) ($typeName...) ((constructor ($args...){$vars... endvars $consBody...}) $funcs...) ($statics...)}=>{
+  rule{($self:ident) ($typeName...) ((constructor ($args...){$vars... extends $selfExp:expr; endvars $consBody...}) $funcs...) ($statics...)}=>{
+    $bodyHelper ($self = $selfExp) ($typeName...) ((constructor ($args...){$vars... endvars $consBody...}) $funcs...) ($statics...)
+  }
+  rule{($self:ident) ($typeName...) ((constructor ($args...){$vars... endvars $consBody...}) $funcs...) ($statics...)}=>{
+    $bodyHelper ($self = {}) ($typeName...) ((constructor ($args...){$vars... endvars $consBody...}) $funcs...) ($statics...)
+  }
+
+  case{$ctx ($self:ident=$selfExp:expr) ($typeName...) ((constructor ($args...){$vars... endvars $consBody...}) $funcs...) ($statics...)}=>{
     return #{
       $typeName... .create = function($args(,)...){
-        var $self = {};
+        var $self = $selfExp;
         var{$vars...}
         $buildBody $self $funcs...;
         $consBody...
@@ -60,6 +67,9 @@ macro $bodyHelper{
       };
       $processStatics ($typeName...) $statics...
     }
+  }
+  case{$ctx ($self) ($typeName...) ((constructor ($args...){$consBody...}) $funcs...) ($statics...)}=>{
+    throwSyntaxError('module', 'missing endvars in constructor', #{ here });
   }
   rule{($self)($typeName...) ($funcs...) ($statics...)}=>{
     $processStatics ($typeName...) $statics...
