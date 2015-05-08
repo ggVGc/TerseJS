@@ -1,22 +1,25 @@
 // Object/module definition
 // @ is just shorthand for 'self', which is an object returned by the end of a @@-block
 // @foo and self.foo are equivalent and both can be used
-@@makeFoo start
-  c = start; // normal lexically scoped variable
+constructor Foo start
+  c = start;// lexically scoped within Foo. var keyword not needed
   @printOnInc = true; // Object property, equivalent to self.printOnInc
+  endvars // Finish variable declarations
 
-  // '@fn' declares member function and is shorthand for self.next = function(){...
-  @fn next
-    ++c;
-    if @printOnInc
-      console.log| c;
+// Public method of Foo
+Foo:+next
+  ++c // can access local variable within Foo
+  if @printOnInc
+    console.log! c
+    
+end Foo
 
 var f = makeFoo| 2; // Create foo with start=2
 f.next!;            // prints 3
 f.printOnInc=false
-f.next! ;          // nothing
+f.next!;          // nothing
 f.printOnInc=true
-f.next!  ;          // prints 5
+f.next!;          // prints 5
 
 
 // Pipes

@@ -17,11 +17,6 @@ macro @ {
     letstx $self = [makeIdent('self', #{$ctx})];
     return #{$self. funHelper $rest...};
   }
-  case {$ctx $args:ident  ...{$body ...}} => {
-    var self = makeIdent("self", #{$ctx});
-    letstx $self = [self];
-    return #{function($args (,) ... ){var $self = {}; $body  ...; return $self;}}
-  }
 
   case {$ctx $name:ident} => {
     letstx $self = [makeIdent('self', #{$ctx})];
@@ -37,6 +32,7 @@ export @
 
 
 
+/*
 macro (@@){
   case {$ctx $name:ident $args:ident  ...{$body ...}} => {
     var self = makeIdent("self", #{$ctx});
@@ -53,6 +49,7 @@ macro (@@){
 }
 
 export (@@)
+*/
 
 
 macro fn{
