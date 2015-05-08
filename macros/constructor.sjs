@@ -1,21 +1,46 @@
 
-macro $makeRecord{
-  rule{ ($self) ($x:ident(.)... public $name:ident $args:ident...{$body...}; $rest...)}=>{ 
-    $self.$name = function(){
-      $body...
-    };
-    $makeRecord  ($self) ($rest...)
+macro $processStatics{
+  rule{($typeName...) $name:ident $args...{$body...} $rest...}=>{
+    $typeName... .$name = function($args(,)...){$body...};
   }
-  rule{ ($self) ($x:ident(.)... private $name:ident $args:ident...{$body...}; $rest...)}=>{ 
-    function $name($args(,)...){
-      $body...
-    };
-    $makeRecord  ($self) ($rest...)
-  }
-  rule{ ($self) ($content...)}=>{ 
+  rule{$a...}=>{
+    foo
   }
 }
 
+macro $processFunctions{
+  rule{ ($statics...) ($self) ($x:ident(.)... static $name:ident $args:ident...{$body...}; $rest...)}=>{ 
+    $processFunctions  ($statics... $name $args...{$body...}) ($self) ($rest...)
+  }
+
+  rule{ ($statics...) ($self) ($x:ident(.)... public $name:ident $args:ident...{$body...}; $rest...)}=>{ 
+    $self.$name = function(){
+      $body...
+    };
+    $processFunctions  ($statics...) ($self) ($rest...)
+  }
+
+  rule{ ($statics...) ($self) ($x:ident(.)... local $name:ident $args:ident...{$body...}; $rest...)}=>{ 
+    function $name($args(,)...){
+      $body...
+    };
+    $processFunctions  ($statics...) ($self) ($rest...)
+  }
+  rule{ ($statics...)($self) ($content...)}=>{ 
+    statics($statics...)
+  }
+}
+
+
+macro $bodyHelper{
+  rule{($typeName...)($args...) $pre... statics($statics...) $post...}=>{
+    $typeName... = function($args(,)...){
+      $pre...
+      $post...
+    }
+    $processStatics ($typeName...) $statics...
+  }
+}
 
 macro $makeBody{
   rule {($self:ident) ($typeName...) ($args...) (extends $extExpr:expr $vars...) ($body...) ($rest...)}=>{
@@ -24,13 +49,16 @@ macro $makeBody{
   rule {($self:ident) ($typeName...) ($args...) ($vars...) ($body...) ($rest...)}=>{
     $makeBody ($self = {})  ($typeName...) ($args...) ($vars...) ($body...) ($rest...)
   }
-  rule {($self:ident = $selfExpr:expr) ($typeName...) ($args...) ($vars...) ($body...) ($rest...)}=>{
-    $typeName... .create = function($args(,)...){
-      var $self = $selfExpr;
-      var{$vars...}
-      $makeRecord  ($self) ($rest...)
-      $body...
-      return $self;
+  case {_ ($self:ident = $selfExpr:expr) ($typeName...) ($args...) ($vars...) ($body...) ($rest...)}=>{
+    letstx $expanded = localExpand(#{
+        var $self = $selfExpr;
+        var{$vars...}
+        $processFunctions  () ($self) ($rest...)
+        $body...
+        return $self;
+    });
+    return #{
+      $typeName... .create = $bodyHelper ($typeName...)($args...) $expanded
     }
   }
 }

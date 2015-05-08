@@ -17,7 +17,8 @@ sweetOpts=""
 compile=false
 preProcessOnly=false
 onlySjs=false
-while getopts "h?o:s:cjp" opt; do
+echo=false
+while getopts "h?o:s:cjpe" opt; do
     case "$opt" in
     h|\?)
         show_help
@@ -32,6 +33,8 @@ while getopts "h?o:s:cjp" opt; do
     p)  preProcessOnly=true
         ;;
     j)  onlySjs=true
+        ;;
+    e)  echo=true
         ;;
     esac
 done
@@ -85,6 +88,9 @@ if [ -n "$outFile" ]; then
    errors=$( { cmd | cat > "$outFile" ;} 2>&1 )
    if [ -z "$errors" ]; then
       echo "Success!"
+      if $echo; then
+         cat "$outFile"
+      fi
    else
       echo "Failed:"
       echo ""
