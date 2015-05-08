@@ -13,18 +13,14 @@
 
 var f = makeFoo| 2; // Create foo with start=2
 f.next!;            // prints 3
-f.printOnInc=false;
-f.next!;            // nothing
-f.printOnInc=true;
-f.next!;            // prints 5
+f.printOnInc=false
+f.next! ;          // nothing
+f.printOnInc=true
+f.next!  ;          // prints 5
 
-
-// Precedence operator. Removes the need for parens in most cases.
-foo $ bar 12 'something' $ baz 42 bob;
-// foo(bar(12, 'something'), baz(42, bob));
 
 // Pipes
-10 |> triple |> console.log; // console.log(triple(10))
+10 >> triple >> console.log; // console.log(triple(10))
 
 // Reverse pipe, function application
 // This just surrounds everything that follows in parens
@@ -33,7 +29,7 @@ foo | bar | 10, baz | 30; // foo(bar(10, baz(30)));
 
 // Lift-Execute
 // Applies each tuple to a given function
-foo <-
+foo!
   1,2
   3,4
 //Output:
@@ -46,7 +42,7 @@ foo!; // foo();
 
 //Object cascading
 foo.bar..
-  .num = .memFoo! // foo.bar.num = foo.bar.memFoo();
+  .num = .memFoo!; // foo.bar.num = foo.bar.memFoo();
   var posX = .pos.x; // var x = foo.bar.pos.x;
 
 //Property copying
