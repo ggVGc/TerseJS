@@ -3,17 +3,17 @@
 // @foo and self.foo are equivalent and both can be used
 module Foo
 constructor start
-  c = start;// lexically scoped within Foo. var keyword not needed
+  c = start;// lexically scoped within Foo. 'var' not needed
   @printOnInc = true; // Object property, equivalent to self.printOnInc
   endvars // Finish variable declarations
 
 // Lexically scoped function within Foo
-private reset
+local reset
   c = 0
 
 // Public method of Foo
 public next
-  ++c // can access local variable within Foo
+  ++c; // can access local variable within Foo
   if @printOnInc
     console.log! c
   if c > 10
