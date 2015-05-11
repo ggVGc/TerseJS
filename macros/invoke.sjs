@@ -71,6 +71,13 @@ export (!)
 
 
 let (<-) = macro{
+  case infix { $fn:expr as $name:ident | _ {$body...}} => {
+    letstx $expanded = localExpand(#{$body...});
+    return #{
+      var $name = $fn;
+     $tupleMap  ($name) ($expanded)
+    }
+  }
   case infix { $fn:expr | _ {$body...}} => {
     letstx $expanded = localExpand(#{$body...});
     return #{

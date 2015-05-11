@@ -9,7 +9,7 @@ macro (..){
   }
   */
 
-  case infix{ $name:ident as $e:expr | _ {$rest... }} => {
+  case infix{ $e:expr as $name:ident | _ {$rest... }} => {
     return #{
       var $name = $e;
       $name .. {$rest...}
