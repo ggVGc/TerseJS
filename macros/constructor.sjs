@@ -86,16 +86,13 @@ macro $processFunctions{
   rule{ ($funcs...) ($statics...)  (constructor $args:ident...{$body...}; $rest...)}=>{ 
     $processFunctions  ($funcs... (constructor($args...){$body...})) ($statics...)  ($rest...)
   }
-  rule{ ($funcs...) ($statics...)  (constructor $args:ident...{$body...}; $rest...)}=>{ 
-    $processFunctions  ($funcs... (constructor($args...){$body...})) ($statics...)  ($rest...)
-  }
 
   rule{ ($funcs...) ($statics...)  (static $content...; $rest...)}=>{ 
     $processFunctions  ($funcs...) ($statics... ($content...))  ($rest...)
   }
 
-  rule{ ($funcs...) ($statics...)  ($x:ident(.)... public $name:ident $args:ident...{$body...}; $rest...)}=>{ 
-    $processFunctions  ($funcs... (public $name ($args...){$body...})) ($statics...)  ($rest...)
+  rule{ ($funcs...) ($statics...)  ($x:ident(.)... pub $name:ident $args:ident...{$body...}; $rest...)}=>{ 
+    $processFunctions  ($funcs... (pub $name ($args...){$body...})) ($statics...)  ($rest...)
   }
 
   rule{ ($funcs...) ($statics...)  ($x:ident(.)... local $name:ident $args:ident...{$body...}; $rest...)}=>{ 
@@ -114,7 +111,7 @@ macro $buildBody{
     };
     $buildBody $self $rest...;
   }
-  rule{$self:ident (public $name:ident ($args...){$body...}) $rest...;}=>{
+  rule{$self:ident (pub $name:ident ($args...){$body...}) $rest...;}=>{
     $self.$name = function($args(,)...){
       $body...
     };
@@ -133,7 +130,8 @@ macro $bodyHelper{
     $bodyHelper ($self = {}) ($typeName...) ((constructor ($args...){$vars... endvars $consBody...}) $funcs...) ($statics...)
   }
 
-  case{$ctx ($self:ident=$selfExp:expr) ($typeName...) ((constructor ($args...){$vars... endvars $consBody...}) $funcs...) ($statics...)}=>{
+  // HACK, fix at some point. Not sure why there's an extra constructor in the args list
+  case{$ctx ($self:ident=$selfExp:expr) ($typeName...) ((constructor ( $args...){$vars... endvars $consBody...}) $funcs...) ($statics...)}=>{
     return #{
       $typeName... .create = function($args(,)...){
         var $self = $selfExp;
@@ -154,23 +152,24 @@ macro $bodyHelper{
 }
 
 macro (module){
-  case{$ctx $typeName:ident(.)... {$pre...}; $rest... endmodule}=>{
+  case{$ctx $typeName:ident(.)... ; $pre... constructor $rest... endmodule}=>{
     letstx $expanded = localExpand(#{
         $processFunctions  () () (constructor $rest...)
     });
+    letstx $self = [makeIdent('self', #{$ctx})];
     return #{
-      $typeName(.)...= {};
+      var $typeName(.)...= {};
       cascade ($typeName... .) {$pre...};
       $bodyHelper ($self)($typeName(.)...) $expanded;
     }
   }
   case{$ctx $typeName:ident(.)...; $rest... endmodule}=>{
     letstx $expanded = localExpand(#{
-        $processFunctions  () () (constructor $rest...)
+        $processFunctions  () () ($rest...)
     });
     letstx $self = [makeIdent('self', #{$ctx})];
     return #{
-      $typeName(.)...= {};
+      var $typeName(.)...= {};
       $bodyHelper ($self)($typeName(.)...) $expanded;
     }
   }

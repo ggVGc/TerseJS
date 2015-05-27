@@ -5,3 +5,6 @@ macro (^){
   }
 }
 export (^)
+
+operator (^=) 4 left { $lhs, $rhs } => #{ $lhs != $rhs}
+export (^=)

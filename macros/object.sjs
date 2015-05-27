@@ -1,9 +1,26 @@
-macro (&){
+macro $arr{
+  rule{$r:expr ; $rest...}=>{
+    $r, $arr $rest...
+  }
+  rule{$a...}=>{
+    $a...
+  }
+}
+
+
+macro (array){
+  rule{{$contents...}}=>{
+    [$arr $contents...];
+  }
+}
+
+
+macro (object){
   rule{{$name:ident : $val:expr; $rest...}}=>{
-    {$name : $val, & $rest...}
+    {$name : $val, object $rest...}
   }
   rule{$name:ident : $val:expr; $rest...}=>{
-    $name : $val, & $rest...
+    $name : $val, object $rest...
   }
   rule{$name:ident : $val:expr;}=>{
     $name : $val
@@ -12,8 +29,10 @@ macro (&){
     $name : $val
   }
   rule{}=>{
-    
   }
 }
 
-export (&)
+export (object)
+export (array)
+
+
