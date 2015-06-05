@@ -14,6 +14,9 @@ macro $tupleMap{
   }
   rule {($f...) ()}=>{
   }
+  rule { ($fn) ($tuple...;;$rest...)} => {
+    $tupleMap ($fn) ($tuple...;$rest...)
+  }
   rule { ($fn) ($tuple...;$rest...)} => {
     $fn $removeDoubleBraces ($tuple...);
     $tupleMap ($fn) ($rest...)
@@ -71,6 +74,13 @@ export (!)
 
 
 let (<-) = macro{
+  /*
+  case infix { $fn:expr | _ $body:expr(,)...} => {
+    letstx $expanded = localExpand(#{$body(;)...});
+    return #{
+     $tupleMap  ($fn) ($expanded;)
+    }
+  }
   case infix { $fn:expr as $name:ident | _ {$body...}} => {
     letstx $expanded = localExpand(#{$body...});
     return #{
@@ -78,6 +88,7 @@ let (<-) = macro{
      $tupleMap  ($name) ($expanded)
     }
   }
+  */
   case infix { $fn:expr | _ {$body...}} => {
     letstx $expanded = localExpand(#{$body...});
     return #{
@@ -86,3 +97,4 @@ let (<-) = macro{
   }
 }
 export (<-)
+

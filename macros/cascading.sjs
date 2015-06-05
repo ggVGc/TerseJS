@@ -1,3 +1,16 @@
+
+macro $simpleCascade {
+  rule { ($e:expr) ($a, $args(,)...)} => {
+    $e.$a,
+    $simpleCascade ($e) ($args(,)...)
+  }
+  rule{ ($e:expr) ( $a $rest...)} => {
+    $e.$a
+    $rest...
+  }
+}
+
+
 // This is a ridulous mess...
 macro (..){
   /*
@@ -7,7 +20,7 @@ macro (..){
       $name .. {$rest...}
     }
   }
-  */
+
 
   case infix{ $e:expr as $name:ident | _ {$rest... }} => {
     return #{
@@ -16,6 +29,7 @@ macro (..){
     }
   }
 
+  */
   case infix{ $name:expr | _ {$rest... .. {$kuk...} $apa...} } => {
     return #{
       $name .. {$rest...} .. {$kuk...};
@@ -64,6 +78,9 @@ macro (..){
       makeDelim('()', unwrapSyntax(#{$name}).inner, here),
       #{$rest...});
     return ret;
+  }
+  rule infix{$e:expr | $a(,)...}=>{
+    $simpleCascade ($e) ($a(,)...)
   }
 }
 

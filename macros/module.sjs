@@ -46,6 +46,12 @@ let (var) = macro{
 export (var);
 
 macro (where){
+  rule infix{ var $pre...{$body...};| {$vars...}}=>{
+    autovar (var) {$vars...;}
+    var $pre...{
+      $body...
+    }
+  }
   rule infix{ $pre...{$body...};| {$vars...}}=>{
     $pre...{
       autovar (var) {$vars...;}
@@ -85,8 +91,8 @@ macro $bodyHelper{
   case{$ctx ($self:ident=$selfExp:expr) ($typeName...) ((constructor ( $args...){$vars... endvars $consBody...}) $funcs...) ($statics...) ($rest...)}=>{
     return #{
       $typeName... .create = function($args(,)...){
-        var $self = $selfExp;
         var{$vars...}
+        var $self = $selfExp;
         $rest...
         $consBody...
         return $self;
@@ -98,7 +104,7 @@ macro $bodyHelper{
   }
 }
 
-macro (module){
+macro (defmod){
   case{$ctx $typeName:ident(.)... ; $pre... constructor $rest... endmodule}=>{
     letstx $expanded = localExpand(#{
         $processFunctions  (constructor $rest...)
@@ -122,7 +128,7 @@ macro (module){
   }
 }
 
-export (module)
+export (defmod)
 
 
 
