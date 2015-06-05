@@ -8,10 +8,10 @@ macro cascade{
 export cascade
 
 macro (autovar) {
-  rule{($decName...) { global $name:ident=$val:expr; $rest ...} }=>{
+  rule{($decName...) { global $name:ident:$val:expr; $rest ...} }=>{
     $name = $val; autovar ($decName...){$rest ...}
   }
-  rule{($decName...) { var $name:ident=$val:expr; $rest ...} }=>{
+  rule{($decName...) { var $name:ident:$val:expr; $rest ...} }=>{
     $decName... $name = $val; autovar ($decName...){$rest ...}
   }
   rule{($decName...) { var $name:ident; $rest ...} }=>{
@@ -20,7 +20,7 @@ macro (autovar) {
   rule{($decName...) { $name:ident; $rest ...} }=>{
     $decName... $name; autovar ($decName...){$rest ...}
   }
-  rule{($decName...) { $name:ident=$val:expr; $rest ...} }=>{
+  rule{($decName...) { $name:ident:$val:expr; $rest ...} }=>{
     $decName... $name = $val; autovar ($decName...){$rest ...}
   }
   rule{($decName...) {$ex;$rest ...}}=>{
@@ -37,6 +37,9 @@ macro (autovar) {
 let (var) = macro{
   rule{{$body...}}=>{
     autovar (var) {$body...}
+  }
+  rule{$e... : $v...}=>{
+    var $e... = $v...
   }
   rule{$e...}=>{
     var $e...
@@ -81,26 +84,23 @@ macro $processFunctions{
 
 
 macro $bodyHelper{
-  rule{($self:ident) ($typeName...) ((constructor ($args...){extends $selfExp:expr; $vars... endvars $consBody...}) $funcs...) ($statics...) ($rest...)}=>{
-    $bodyHelper ($self = $selfExp) ($typeName...) ((constructor ($args...){$vars... endvars $consBody...}) $funcs...) ($statics...) ($rest...)
+  rule{($vars...) ($self:ident) ($typeName...) ((constructor ($args...){extends $selfExp:expr; $consBody...}) $funcs...) ($statics...) ($rest...)}=>{
+    $bodyHelper ($vars...) ($self = $selfExp) ($typeName...) ((constructor ($args...){$consBody...}) $funcs...) ($statics...) ($rest...)
   }
-  rule{($self:ident) ($typeName...) ((constructor ($args...){$vars... endvars $consBody...}) $funcs...) ($statics...) ($rest...)}=>{
-    $bodyHelper ($self = {}) ($typeName...) ((constructor ($args...){$vars... endvars $consBody...}) $funcs...) ($statics...) ($rest...)
+  rule{($vars...) ($self:ident) ($typeName...) ((constructor ($args...){$consBody...}) $funcs...) ($statics...) ($rest...)}=>{
+    $bodyHelper () ($self = object{$vars...}) ($typeName...) ((constructor ($args...){$consBody...}) $funcs...) ($statics...) ($rest...)
   }
 
-  case{$ctx ($self:ident=$selfExp:expr) ($typeName...) ((constructor ( $args...){$vars... endvars $consBody...}) $funcs...) ($statics...) ($rest...)}=>{
+  case{$ctx ($vars...) ($self:ident=$selfExp:expr) ($typeName...) ((constructor ( $args...){$consBody...}) $funcs...) ($statics...) ($rest...)}=>{
     return #{
       $typeName... .create = function($args(,)...){
+        var $self : $selfExp;
         var{$vars...}
-        var $self = $selfExp;
         $rest...
         $consBody...
         return $self;
       };
     }
-  }
-  case{$ctx ($self) ($typeName...) ((constructor ($args...){$consBody...}) $funcs...) ($statics...)}=>{
-    throwSyntaxError('module', 'missing endvars in constructor', #{ here });
   }
 }
 
@@ -111,10 +111,16 @@ macro (defmod){
     });
     letstx $self = [makeIdent('self', #{$ctx})];
     return #{
+      var $typeName(.)... : {};
+      $bodyHelper ($pre...) ($self)($typeName(.)...) $expanded;
+    }
+    /*
+    return #{
       var $typeName(.)...= {};
       cascade ($typeName... .) {$pre...};
-      $bodyHelper ($self)($typeName(.)...) $expanded;
+      $bodyHelper ($pre...) ($self)($typeName(.)...) $expanded;
     }
+    */
   }
   case{$ctx $typeName:ident(.)...; $rest... endmodule}=>{
     letstx $expanded = localExpand(#{
@@ -122,8 +128,8 @@ macro (defmod){
     });
     letstx $self = [makeIdent('self', #{$ctx})];
     return #{
-      var $typeName(.)...= {};
-      $bodyHelper ($self)($typeName(.)...) $expanded;
+      var $typeName(.)... : {};
+      $bodyHelper () ($self)($typeName(.)...) $expanded;
     }
   }
 }

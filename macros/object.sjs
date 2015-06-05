@@ -28,7 +28,8 @@ macro (object){
   rule{$name:ident : $val:expr}=>{
     $name : $val
   }
-  rule{}=>{
+  rule{$all...}=>{
+    $all...
   }
 }
 
