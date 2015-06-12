@@ -4,7 +4,6 @@ macro (:=){
     $name {$props(,)...} := {$other, $others(,)...}
   }
   */
-
   rule infix { $name:expr {$props ...} | {$restOthers:expr(,)...;} } => {
     $name {$props ...} := {$restOthers(,)...}
   }

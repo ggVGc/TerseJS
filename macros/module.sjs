@@ -88,7 +88,7 @@ macro $bodyHelper{
     $bodyHelper ($vars...) ($self = $selfExp) ($typeName...) ((constructor ($args...){$consBody...}) $funcs...) ($statics...) ($rest...)
   }
   rule{($vars...) ($self:ident) ($typeName...) ((constructor ($args...){$consBody...}) $funcs...) ($statics...) ($rest...)}=>{
-    $bodyHelper () ($self = object{$vars...}) ($typeName...) ((constructor ($args...){$consBody...}) $funcs...) ($statics...) ($rest...)
+    $bodyHelper ($vars...) ($self = {}) ($typeName...) ((constructor ($args...){$consBody...}) $funcs...) ($statics...) ($rest...)
   }
 
   case{$ctx ($vars...) ($self:ident=$selfExp:expr) ($typeName...) ((constructor ( $args...){$consBody...}) $funcs...) ($statics...) ($rest...)}=>{
