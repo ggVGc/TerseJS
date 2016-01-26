@@ -1,0 +1,148 @@
+var
+  Tween = createjs.Tween
+
+fn range start stop
+  var
+    c = 0
+    ret =[]
+  for i=start, stop
+    ret[c] = i
+    c++
+  return ret
+
+fn each arr f
+  var
+    len = arr.length
+  for i=0, len
+    f | arr[i], i
+
+
+fn map arr f
+  var
+    ret = []
+    len = arr.length
+  for i=0, len
+    ret[i] = f | arr[i]
+  return ret
+
+
+defmod Cornstalk
+origPos : {}
+constructor mc pointMc index heights offsets
+  @mc = mc
+  mc..
+    .gotoAndStop | .getLabels()[index+1].position
+    for i=1, Math.min(heights[0], 9)
+      MC.gotoLast | .stem_mc['ear'+i]
+    for global i=heights[1], 1, -1
+      MC.gotoLast | .stem_mc['leaf'+i]
+    MC.gotoLast | .stem_mc.tassle_mc
+      
+  origPos.x= mc.stem_mc.x
+  origPos.y= mc.stem_mc.y
+
+
+@fn reset
+  mc.stem_mc{x y} := origPos
+
+endmodule
+
+
+var
+  buttons = array
+    AMLib.WaltLib.makeButton | root.soil_btn, true
+    AMLib.WaltLib.makeButton | root.sun_btn, true
+    AMLib.WaltLib.makeButton | root.rain_btn, true
+  stalkHeights = [[3,6],[5,8],[6,11],[8,12],[10,14]]
+  stalkOffsets = array
+    [0.4, -0.4, -0.4, 0.2, 0.5]
+    [0.1, -0.1, -0.2, 0.2, -0.2]
+    [0.0, -0.1, -0.1, -0.1, 0.0]
+  stalks: map| range(1, 6), λ ind
+    var g = root.graph_mc
+    return Cornstalk.create | g['stalk'+ind], g['point'+ind+'_mc'], ind, stalkHeights[ind-1]
+
+fn buttonCommon btn stateIndex
+  H.tween.fadeIn | root.reset_btn
+  H.wait.stop!
+  btn.setEnabled | false, 0
+  btn.mc.alpha = 0.5
+    
+    
+  var s, maxTime = 0
+  each | stalkOffsets[stateIndex], λ off ind
+    s = stalks[ind].mc.stem_mc
+    var
+      o = off*-50
+      time = Math.abs | o*80
+    if time>maxTime
+      maxTime = time
+
+    Tween.get(s, {override:true}).to({y:s.y+o}, time).call | λ
+      MC.show | root.soil_btn, root.sun_btn, root.rain_btn
+
+  var t, allPressed = true
+  each | buttons, λ b
+    var origAlpha = b.mc.alpha
+    b.setEnabled | false,0
+    b.mc.alpha = 0.5
+    t = Tween.get(b, {override:true}).wait(maxTime).call | λ
+      if origAlpha>0.5
+        b.setEnabled | true
+        allPressed = false
+      b.mc.alpha = origAlpha
+  t.wait(100).call | λ
+    if allPressed
+      root.play!
+      H.tween.fadeOut | root.reset_btn
+      each | buttons, λ b
+        H.tween.fadeOut | b.mc
+      H.tween.waitTicks | 10, λ
+        each | stalks, λ s
+          H.tween.fadeOut | s.mc
+        H.tween.fadeIn | root.graph_mc.points2
+    
+
+each | buttons, λ b ind
+  b.onClick = λ
+    buttonCommon | b, ind
+
+fn commonInit
+  each | buttons, λ b
+    b.setEnabled | true,0
+    b.mc.alpha = 0
+  root.reset_btn.alpha = 0
+  root.graph_mc.points2.alpha = 0
+
+root.reset_btn.addEventListener | 'click', λ
+  commonInit!
+  each | stalks, λ s
+    s.mc.alpha = 1
+    s.reset!
+  each | buttons, λ b
+    b.mc.alpha = 1
+
+fn panelInit
+  root.gotoAndStop | 0
+  root.graph_mc.gotoAndStop | 0
+  root.graph_mc.points.alpha = 1
+  each | stalks, λ s
+    s.mc.alpha = 0
+    s.reset!
+  commonInit!
+
+fn panelPlay
+  var t
+  each | stalks, λ s
+    t = H.tween.fadeIn | s.mc, 10
+  t.call | λ
+    var t = Tween.get(root.graph_mc.points, {override:true, useTicks:true})//
+    .to({alpha:0}, 5)//
+    .call | λ
+      root.stop!
+      H.cap.show | 'buttons_shown'
+      H.wait.start!
+      each | buttons, λ b
+        H.tween.fadeIn | b.mc
+
+

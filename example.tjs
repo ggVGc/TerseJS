@@ -1,21 +1,20 @@
 // Object/module definition
 // @ is just shorthand for 'self', which is an object returned by the end of a @@-block
 // @foo and self.foo are equivalent and both can be used
-module Foo
+defmod Foo
 constructor start
-  c = start;// lexically scoped within Foo. 'var' not needed
+  c = start; // lexically scoped within Foo. 'var' not needed
   @printOnInc = true; // Object property, equivalent to self.printOnInc
-  endvars // Finish variable declarations
 
 // Lexically scoped function within Foo
-local reset
+fn reset
   c = 0
 
 // Public method of Foo
-public next
+@fn next
   ++c; // can access local variable within Foo
   if @printOnInc
-    console.log! c
+    console.log | c
   if c > 10
     reset!
     

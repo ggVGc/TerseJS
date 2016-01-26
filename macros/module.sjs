@@ -38,9 +38,6 @@ let (var) = macro{
   rule{{$body...}}=>{
     autovar (var) {$body...}
   }
-  rule{$e... : $v...}=>{
-    var $e... = $v...
-  }
   rule{$e...}=>{
     var $e...
   }
@@ -94,7 +91,7 @@ macro $bodyHelper{
   case{$ctx ($vars...) ($self:ident=$selfExp:expr) ($typeName...) ((constructor ( $args...){$consBody...}) $funcs...) ($statics...) ($rest...)}=>{
     return #{
       $typeName... .create = function($args(,)...){
-        var $self : $selfExp;
+        var $self = $selfExp;
         var{$vars...}
         $rest...
         $consBody...
@@ -111,7 +108,7 @@ macro (defmod){
     });
     letstx $self = [makeIdent('self', #{$ctx})];
     return #{
-      var $typeName(.)... : {};
+      var $typeName(.)... = {};
       $bodyHelper ($pre...) ($self)($typeName(.)...) $expanded;
     }
     /*
@@ -128,7 +125,7 @@ macro (defmod){
     });
     letstx $self = [makeIdent('self', #{$ctx})];
     return #{
-      var $typeName(.)... : {};
+      var $typeName(.)... = {};
       $bodyHelper () ($self)($typeName(.)...) $expanded;
     }
   }
